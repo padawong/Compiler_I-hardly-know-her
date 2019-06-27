@@ -1,0 +1,32 @@
+PROGRAM
+
+BEGIN_PROGRAM
+
+WHILE
+
+ELSE
+
+IF
+
+THEN
+
+NUMBER 14
+
+NUMBER 1099
+
+NUMBER 204912
+
+NUMBER 3
+IDENT ab_4
+underscore
+
+IDENT ab_4
+underscore
+
+IDENT ab_4
+
+IDENT ab
+underscore
+underscore
+NUMBER 4
+
