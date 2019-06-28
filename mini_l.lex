@@ -43,7 +43,7 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 [ \t]+          {/* ignore spaces */ currPos += yyleng;}
 "\n"            {currLine++; currPos = 1;}
 
-
+.               {printf("Error at line %d, column %d, unrecognized symbol \"%s\"\n", currLine, currPos, yytext); currPos += yyleng;}
 %%
 
 main()
