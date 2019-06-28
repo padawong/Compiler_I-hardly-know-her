@@ -8,11 +8,13 @@
  *         List of tokens should be printed out
  */
 
+%option full
+
 DIGIT   [0-9]
 ALPHA   [a-zA-Z]
-IDENTIFIER   {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*
-INVALID_IDENT {DIGIT}{ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*
-  
+IDENTIFIER   {ALPHA}({DIGIT}|{ALPHA})*(_*({DIGIT}|{ALPHA})+)*
+IDENT_DIGIT {DIGIT}{ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*|{DIGIT}{ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_
+IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 
 %{
 // C variable declarations must occur between these two brackets
@@ -31,11 +33,17 @@ INVALID_IDENT {DIGIT}{ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*
 "endif"             {printf("ENDIF\n"); currPos += yyleng;}
 "else"              {printf("ELSE\n"); currPos += yyleng;}
 "while"             {printf("WHILE\n"); currPos += yyleng;}
-"_"                 {printf("underscore\n"); currPos += yyleng;}
  /* complete words; focus on identifiers */
 
 {DIGIT}+            {printf("NUMBER %s\n", yytext);}
 {IDENTIFIER}        {printf("IDENT %s\n", yytext);}
+{IDENT_DIGIT}       {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); currPos += yyleng;}
+{IDENT_UNDERSCORE}  {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); currPos += yyleng;}
+
+[ \t]+          {/* ignore spaces */ currPos += yyleng;}
+"\n"            {currLine++; currPos = 1;}
+
+
 %%
 
 main()
