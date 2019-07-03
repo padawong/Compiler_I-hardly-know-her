@@ -74,6 +74,7 @@ Error at line 46, column 1: identifier "2n" must begin with a letter
 COLON
 INTEGER
 SEMICOLON
+Error at line 46, column 14, unrecognized symbol "?"
 BEGIN_PROGRAM
 END_PROGRAM
 PROGRAM
@@ -83,5 +84,7 @@ Error at line 50, column 1: identifier "n_" cannot end with an underscore
 COLON
 INTEGER
 SEMICOLON
+Error at line 50, column 14, unrecognized symbol "?"
 BEGIN_PROGRAM
+Error at line 51, column 13, unrecognized symbol "="
 END_PROGRAM
