@@ -1,0 +1,18 @@
+PROGRAM
+BEGIN_PROGRAM
+WHILE
+ELSE
+IF
+THEN
+NUMBER 14
+NUMBER 1099
+NUMBER 204912
+Error at line 10, column 1: identifier "3ab_4_" must begin with a letter
+Error at line 11, column 1: identifier "ab_4_" cannot end with an underscore
+IDENT ab_4
+IDENT ab__4
+IDENT stuff
+Error at line 14, column 1, unrecognized symbol "?"
+ELSE
+Error at line 15, column 5, unrecognized symbol "-"
+IDENT barabua

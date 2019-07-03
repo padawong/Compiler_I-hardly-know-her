@@ -1,0 +1,90 @@
+PROGRAM
+BEGIN_PROGRAM
+WHILE
+ELSE
+IF
+THEN
+ENDIF
+ELSE
+WHILE
+DO
+BEGINLOOP
+ENDLOOP
+CONTINUE
+READ
+WRITE
+AND
+OR
+NOT
+TRUE
+FALSE
+NUMBER 14
+NUMBER 1099
+NUMBER 204912
+Error at line 24, column 1: identifier "3ab_4_" must begin with a letter
+Error at line 25, column 1: identifier "ab_4_" cannot end with an underscore
+IDENT ab_4
+IDENT ab__4
+IDENT stuff
+Error at line 28, column 6, unrecognized symbol "?"
+ELSE
+SUB
+IDENT barabua
+Error at line 31, column 1, unrecognized symbol "&"
+PROGRAM
+IDENT test
+SEMICOLON
+IDENT n
+COLON
+INTEGER
+SEMICOLON
+BEGIN_PROGRAM
+READ
+IDENT n
+SEMICOLON
+IDENT n
+ASSIGN
+IDENT n
+ADD
+NUMBER 1
+Error at line 36, column 14, unrecognized symbol "?"
+Error at line 37, column 4, unrecognized symbol "?"
+IDENT n
+Error at line 38, column 4, unrecognized symbol "?"
+IDENT n
+Error at line 39, column 4, unrecognized symbol "?"
+ADD
+Error at line 40, column 4, unrecognized symbol "?"
+ASSIGN
+Error at line 41, column 4, unrecognized symbol "?"
+IDENT n
+ASSIGN
+IDENT n
+ADD
+NUMBER 1
+Error at line 42, column 11, unrecognized symbol "?"
+WRITE
+IDENT n
+SEMICOLON
+END_PROGRAM
+PROGRAM
+IDENT test
+SEMICOLON
+Error at line 46, column 1: identifier "2n" must begin with a letter
+COLON
+INTEGER
+SEMICOLON
+Error at line 46, column 14, unrecognized symbol "?"
+BEGIN_PROGRAM
+END_PROGRAM
+PROGRAM
+IDENT test
+SEMICOLON
+Error at line 50, column 1: identifier "n_" cannot end with an underscore
+COLON
+INTEGER
+SEMICOLON
+Error at line 50, column 14, unrecognized symbol "?"
+BEGIN_PROGRAM
+Error at line 51, column 13, unrecognized symbol "="
+END_PROGRAM
