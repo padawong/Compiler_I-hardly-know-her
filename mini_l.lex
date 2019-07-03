@@ -74,12 +74,12 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 ","                 {printf("COMMA\n"); currPos += yyleng;}
 "("                 {printf("L_PAREN\n"); currPos += yyleng;}
 ")"                 {printf("R_PAREN\n"); currPos += yyleng;}
-":="                {printf("ASSIGN\n"); currPos += yyleng;}
+":="                {printf("ASSIGN\n"); currPos += (yyleng + 1);}
 
 {IDENT_DIGIT}       {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); currPos += yyleng;}
 {IDENT_UNDERSCORE}  {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); currPos += yyleng;}
 
-["\t"|" "]+         {/* ignore spaces */ currPos += yyleng;}
+["\t"|" "]          {/* ignore spaces */ currPos += yyleng;}
 ["\n"|"\r"]         {currLine++; currPos = 1;}
 
 {COMMENT}           {currPos += yyleng;}
