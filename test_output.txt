@@ -26,7 +26,7 @@ Error at line 25, column 1: identifier "ab_4_" cannot end with an underscore
 IDENT ab_4
 IDENT ab__4
 IDENT stuff
-Error at line 28, column 1, unrecognized symbol "?"
+Error at line 28, column 6, unrecognized symbol "?"
 ELSE
 SUB
 IDENT barabua
@@ -47,7 +47,22 @@ ASSIGN
 IDENT n
 ADD
 NUMBER 1
-Error at line 36, column 11, unrecognized symbol "?"
+Error at line 36, column 14, unrecognized symbol "?"
+Error at line 37, column 4, unrecognized symbol "?"
+IDENT n
+Error at line 38, column 4, unrecognized symbol "?"
+IDENT n
+Error at line 39, column 4, unrecognized symbol "?"
+ADD
+Error at line 40, column 4, unrecognized symbol "?"
+ASSIGN
+Error at line 41, column 4, unrecognized symbol "?"
+IDENT n
+ASSIGN
+IDENT n
+ADD
+NUMBER 1
+Error at line 42, column 11, unrecognized symbol "?"
 WRITE
 IDENT n
 SEMICOLON
@@ -55,7 +70,7 @@ END_PROGRAM
 PROGRAM
 IDENT test
 SEMICOLON
-Error at line 40, column 1: identifier "2n" must begin with a letter
+Error at line 46, column 1: identifier "2n" must begin with a letter
 COLON
 INTEGER
 SEMICOLON
@@ -64,7 +79,7 @@ END_PROGRAM
 PROGRAM
 IDENT test
 SEMICOLON
-Error at line 44, column 1: identifier "n_" cannot end with an underscore
+Error at line 50, column 1: identifier "n_" cannot end with an underscore
 COLON
 INTEGER
 SEMICOLON

@@ -65,8 +65,8 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 ">="                {printf("GTE\n"); currPos += yyleng;}
 
  /*** Identifiers and Numbers ***/
-{IDENTIFIER}        {printf("IDENT %s\n", yytext);}
-{DIGIT}+            {printf("NUMBER %s\n", yytext);}
+{IDENTIFIER}        {printf("IDENT %s\n", yytext); currPos += yyleng;}
+{DIGIT}+            {printf("NUMBER %s\n", yytext); currPos += yyleng;}
 
  /*** Other Special Symbols ***/
 ";"                 {printf("SEMICOLON\n"); currPos += yyleng;}
@@ -74,7 +74,7 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 ","                 {printf("COMMA\n"); currPos += yyleng;}
 "("                 {printf("L_PAREN\n"); currPos += yyleng;}
 ")"                 {printf("R_PAREN\n"); currPos += yyleng;}
-":="                {printf("ASSIGN\n"); currPos += (yyleng + 1);}
+":="                {printf("ASSIGN\n"); currPos += yyleng;}
 
 {IDENT_DIGIT}       {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); currPos += yyleng;}
 {IDENT_UNDERSCORE}  {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); currPos += yyleng;}
