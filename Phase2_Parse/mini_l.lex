@@ -86,9 +86,3 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 
 .                   {printf("Error at line %d, column %d, unrecognized symbol \"%s\"\n", currLine, currPos, yytext); currPos += yyleng;}
 %%
-
-main()
-{
-  yylex();
-}
-
