@@ -1,0 +1,71 @@
+program -> PROGRAM IDENT SEMICOLON block ENDPROGRAM 
+
+block -> declarations BEGINPROGRAM statements
+declarations -> declarations declaration SEMICOLON 
+              | declaration SEMICOLON
+statements -> statements statement SEMICOLON 
+            | statement SEMICOLON
+
+declaration -> identifiers COLON array_of INTEGER
+identifiers -> identifiers COMMA IDENT 
+             | IDENT
+array_of -> /* EMPTY */
+          | ARRAY L_PAREN NUMBER R_PAREN OF
+
+statement -> var ASSIGN expression
+DOUBLE CHECK:
+           | IF bool_exp THEN statements2 ENDIF
+           | WHILE bool_exp BEGIN_LOOP statements ENDLOOP
+           | DO BEGIN_LOOP statements ENDLOOP WHILE bool_exp
+           | READ vars
+           | WRITE vars
+           | CONTINUE
+statements2 -> statements statements3
+statements3 -> /* EMPTY */
+             | ELSE statements
+vars -> vars COMMA var
+      | var
+
+bool_exp -> relation_and_exp rel_loop
+rel_loop -> rel_loop OR relation_and_exp 
+          | /* EMPTY */
+
+relation_and_exp -> relation_exp rel_loop2
+rel_loop2 -> rel_loop2 AND relation_exp
+           | /* EMPTY */
+
+relation_exp -> not_exp fork
+not_exp -> NOT
+         | /* EMPTY */
+fork -> expression comp expression
+      | TRUE
+      | FALSE
+      | L_PAREN bool_exp R_PAREN
+
+comp -> EQ
+      | NEQ
+      | LT
+      | GT
+      | LTE
+      | GTE
+
+expression -> multiplicative_exp mult_loop
+mult_loop -> ADD multiplicative_exp mult_loop
+           | SUB multiplicative_exp mult_loop
+           | /* EMPTY */
+
+multiplicative_exp -> term term_loop
+term_loop -> MULT term term_loop
+           | DIV term term_loop
+           | MOD term term_loop
+           | /* EMPTY */
+
+term -> neg term_fork
+neg -> SUB
+     | /* EMPTY */
+term_fork -> var
+           | NUMBER
+           | L_PAREN expression R_PAREN
+
+var -> IDENT
+     | IDENT L_PAREN expression R_PAREN
