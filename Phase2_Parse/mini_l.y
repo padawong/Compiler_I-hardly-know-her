@@ -18,12 +18,12 @@
 
 %error-verbose
 %start input                            /* start of grammar like S' */
-%token MULT DIV ADD SUB EQUAL L_PAREN R_PAREN END
-%token <dval> NUMBER
-%type <dval> exp
+%token PROGRAM BEGIN_PROGRAM END_PROGRAM INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE READ WRITE AND OR NOT TRUE FALSE SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA L_PAREN R_PAREN ASSIGN END
+%token <ival> NUMBER
+%type <sval> IDENT
 %left ADD SUB                        /* lower precedence */
 %left MULT DIV                          /* higher precedence */
-%nonassoc UMINUS
+/* %nonassoc SUB */
 
 
 %% 
@@ -59,10 +59,10 @@ exp:        NUMBER                { $$ = $1; }
 
 
 
-program: PROGRAM IDENT SEMICOLON block ENDPROGRAM 
+program: PROGRAM IDENT SEMICOLON block ENDPROGRAM       {printf("PROGRAM IDENT SEMICOLON block ENDPROGRAM, ");} 
          ;
 
-block: decl BEGINPROGRAM stmnt
+block: decl BEGINPROGRAM stmnt                          {printf("decl BEGINPROGRAM stmnt");}
        ;
 decl: decl declaration SEMICOLON 
       | declaration SEMICOLON
