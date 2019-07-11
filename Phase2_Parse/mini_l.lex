@@ -20,6 +20,7 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 
 %{
 // C variable declarations must occur between these two brackets
+   #include "y.tab.h"
     int currLine = 1, currPos = 1;
 %}
 
