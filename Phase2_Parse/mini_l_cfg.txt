@@ -1,10 +1,10 @@
 program -> PROGRAM IDENT SEMICOLON block ENDPROGRAM 
 
-block -> declarations BEGINPROGRAM statements
-declarations -> declarations declaration SEMICOLON 
-              | declaration SEMICOLON
-statements -> statements statement SEMICOLON 
-            | statement SEMICOLON
+block -> decl BEGINPROGRAM stmnt
+decl -> decl declaration SEMICOLON 
+      | declaration SEMICOLON
+stmnt -> stmnt statement SEMICOLON 
+       | statement SEMICOLON
 
 declaration -> identifiers COLON array_of INTEGER
 identifiers -> identifiers COMMA IDENT 
@@ -13,25 +13,25 @@ array_of -> /* EMPTY */
           | ARRAY L_PAREN NUMBER R_PAREN OF
 
 statement -> var ASSIGN expression
-DOUBLE CHECK:
-           | IF bool_exp THEN statements2 ENDIF
-           | WHILE bool_exp BEGIN_LOOP statements ENDLOOP
-           | DO BEGIN_LOOP statements ENDLOOP WHILE bool_exp
+//           | IF bool_exp THEN stmnt2 ENDIF
+           | IF bool_exp THEN stmnt ELSE stmnt ENDIF
+           | WHILE bool_exp BEGIN_LOOP stmnt ENDLOOP
+           | DO BEGIN_LOOP stmnt ENDLOOP WHILE bool_exp
            | READ vars
            | WRITE vars
            | CONTINUE
-statements2 -> statements statements3
-statements3 -> /* EMPTY */
-             | ELSE statements
+//stmnt2 -> stmnt stmnt3
+//stmnt3 -> /* EMPTY */
+//        | ELSE stmnt
 vars -> vars COMMA var
       | var
 
 bool_exp -> relation_and_exp rel_loop
-rel_loop -> rel_loop OR relation_and_exp 
+rel_loop -> OR relation_and_exp rel_loop 
           | /* EMPTY */
 
 relation_and_exp -> relation_exp rel_loop2
-rel_loop2 -> rel_loop2 AND relation_exp
+rel_loop2 -> AND relation_exp rel_loop2
            | /* EMPTY */
 
 relation_exp -> not_exp fork
