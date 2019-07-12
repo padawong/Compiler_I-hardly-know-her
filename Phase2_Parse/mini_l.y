@@ -11,7 +11,6 @@
 %}
 
 %union{
-  double dval;
   int ival;
   char* sval;
 }
@@ -21,13 +20,14 @@
 %token PROGRAM BEGIN_PROGRAM END_PROGRAM INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE READ WRITE AND OR NOT TRUE FALSE SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA L_PAREN R_PAREN ASSIGN END
 %token <ival> NUMBER
 %token <sval> IDENT
+%type <sval> block
 %left ADD SUB                        /* lower precedence */
 %left MULT DIV                          /* higher precedence */
 /* %nonassoc SUB */
 
 
 %% 
-program: PROGRAM IDENT SEMICOLON block END_PROGRAM       {printf("program -> PROGRAM IDENT SEMICOLON block END_PROGRAM\n");} 
+program: PROGRAM IDENT SEMICOLON block END_PROGRAM       {printf("program -> PROGRAM IDENT (%s) SEMICOLON block END_PROGRAM\n", $2);} 
          ;
 
 block: decl BEGIN_PROGRAM stmnt                          {printf("block -> decl BEGIN_PROGRAM stmnt\n");}
@@ -41,8 +41,8 @@ stmnt: stmnt statement SEMICOLON                        {printf("stmnt -> stmnt 
 
 declaration: identifiers COLON array_of INTEGER         {printf("declaration -> identifiers COLON array_of INTEGER\n");}
              ;
-identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT\n");}
-             | IDENT                                    {printf("identifiers -> IDENT\n");}
+identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT (%s)\n", $3);}
+             | IDENT                                    {printf("identifiers -> IDENT (%s)\n", $1);}
              ;
 array_of: /* EMPTY */                                   {printf("array_of -> /* EMPTY */\n");}
           | ARRAY L_PAREN NUMBER R_PAREN OF             {printf("array_of -> ARRAY L_PAREN NUMBER R_PAREN OF\n");}
@@ -119,8 +119,8 @@ term_fork: var                                          {printf("term_fork -> va
            | L_PAREN expression R_PAREN                 {printf("term_fork -> L_PAREN expression R_PAREN\n");}
            ;
 
-var: IDENT                                              {printf("var -> IDENT\n");}
-     | IDENT L_PAREN expression R_PAREN                 {printf("var -> IDENT L_PAREN expression R_PAREN\n");}
+var: IDENT                                              {printf("var -> IDENT (%s)\n", $1);}
+     | IDENT L_PAREN expression R_PAREN                 {printf("var -> IDENT (%s) L_PAREN expression R_PAREN\n", $1);}
      ;
 
 %%
