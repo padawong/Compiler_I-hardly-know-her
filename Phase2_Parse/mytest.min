@@ -1,56 +1,55 @@
-##  primes.min: compute primes using Sieve of Eratosthenes
-##  (http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
-##
-##  Compute primes up to a specified n by crossing out multiples of successively
-##  larger primes in a boolean array.  The array stores a[k] = 1 if k is composite
-##  (not prime), and a[k] = 0 if k is not divisible by the divisors considered
-##  thus far.
-## 
-##  Requires a specified integer n as input, assumed to be < 1000.
+## Requires 2 integer arguments
 
-program primes;
+program mytest;
 
-n : integer;
-a : array(1000) of integer;	## prime candidates array
-i, j : integer;
-x, sqrt_n : integer;
+  n : integer;
+  i, j, k: integer;
+  t : array (20) of integer;
 
 beginprogram	## main program
-    ## compute the square root of n and put the result in sqrt_n
-    read n;
-    x := n;
-    while x > n / x beginloop
-	    x := (x+n / x) / 2;
-    endloop;
-    sqrt_n := x;
 
-    ## initialization of the array
-    i := 2;
-    while i <= n beginloop
-	    a(i) := 0;
-	    i := i + 1;
-    endloop;
+  read i, j;
 
-    ## make the array
-    i := 2;
-    while i <= sqrt_n beginloop
-	    if a(i) == 0 then
-          ## i prime, so eliminate its multiples
-	       j := i+i;
-	       while j <= n beginloop
-		       a(j) := 1;
-		       j := j+i;
-	       endloop;
+  k := 0;
+  n := 20;
+  
+  do 
+    beginloop
+       t(k) := k;
+       k := k + 1;
+       if k % 2 == 0 then
+           continue;
        endif;
-       i := i + 1;
-    endloop;
+       write t(k-1);
+    endloop
+  while k < n;
 
-    ## print primes
-    i := 2;
-    while i <= n beginloop
-	    if a(i) == 0 then
-	       write i;
-       endif;
-       i := i + 1;
-   endloop;
+  if i<j and j < n and i>=0 then
+     t(i) := i * 2;
+     t(j) := j * 2;
+     k := t(i);
+     t(i) := t(j);
+     t(j) := k;
+  else
+     while  i >= j or false 
+       beginloop
+        k := (1 + i - j ) % 3;
+        i := i - 1;
+        if k > 1 then
+             continue;
+        endif;
+        write k;
+     endloop;
+  endif;
+
+  write i, j, k;
+
+  if i < n and i >= 0 then
+    write t(i);
+  endif;
+
+  if j < n and j >=0 then
+    write t(j);
+  endif;
+
 endprogram
