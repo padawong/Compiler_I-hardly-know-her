@@ -1,16 +1,438 @@
-identifiers -> IDENT
-array_of -> ~e
+identifiers -> IDENT (n)
+array_of -> 
 declaration -> identifiers COLON array_of INTEGER
 decl -> declaration SEMICOLON
-var -> IDENT
-neg -> ~e
+identifiers -> IDENT (a)
+array_of -> ARRAY L_PAREN NUMBER R_PAREN OF
+declaration -> identifiers COLON array_of INTEGER
+decl -> decl declaration SEMICOLON
+identifiers -> IDENT (i)
+identifiers -> identifiers COMMA IDENT (j)
+array_of -> 
+declaration -> identifiers COLON array_of INTEGER
+decl -> decl declaration SEMICOLON
+identifiers -> IDENT (x)
+identifiers -> identifiers COMMA IDENT (sqrt_n)
+array_of -> 
+declaration -> identifiers COLON array_of INTEGER
+decl -> decl declaration SEMICOLON
+var -> IDENT (n)
+vars -> var
+statement -> READ vars
+stmnt -> statement SEMICOLON
+var -> IDENT (x)
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+not_exp -> 
+neg -> 
+var -> IDENT (x)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> GT
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+neg -> 
+var -> IDENT (x)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+term_loop -> DIV term term_loop
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+var -> IDENT (x)
+neg -> 
+neg -> 
+var -> IDENT (x)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+neg -> 
+var -> IDENT (x)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+term_loop -> DIV term term_loop
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+term_fork -> L_PAREN expression R_PAREN
+term -> neg term_fork
+neg -> 
 term_fork -> NUMBER
 term -> neg term_fork
-term_loop -> ~e
+term_loop -> 
+term_loop -> DIV term term_loop
 multiplicative_exp -> term term_loop
-mult_loop -> ~e
+mult_loop -> 
 expression -> multiplicative_exp mult_loop
 statement -> var ASSIGN expression
 stmnt -> statement SEMICOLON
+statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP
+stmnt -> stmnt statement SEMICOLON
+var -> IDENT (sqrt_n)
+neg -> 
+var -> IDENT (x)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+not_exp -> 
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> LTE
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+var -> IDENT (a) L_PAREN expression R_PAREN
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP
+stmnt -> stmnt statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+not_exp -> 
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> LTE
+neg -> 
+var -> IDENT (sqrt_n)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+not_exp -> 
+neg -> 
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+var -> IDENT (a) L_PAREN expression R_PAREN
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> 
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+var -> IDENT (j)
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> statement SEMICOLON
+not_exp -> 
+neg -> 
+var -> IDENT (j)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> LTE
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+neg -> 
+var -> IDENT (j)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+var -> IDENT (a) L_PAREN expression R_PAREN
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> statement SEMICOLON
+var -> IDENT (j)
+neg -> 
+var -> IDENT (j)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP
+stmnt -> stmnt statement SEMICOLON
+statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF
+stmnt -> statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP
+stmnt -> stmnt statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+not_exp -> 
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> LTE
+neg -> 
+var -> IDENT (n)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+not_exp -> 
+neg -> 
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+var -> IDENT (a) L_PAREN expression R_PAREN
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+comp -> 
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+expression -> multiplicative_exp mult_loop
+fork -> NOT
+relation_exp -> not_exp fork
+rel_loop2 -> 
+relation_and_exp -> relation_exp rel_loop2
+rel_loop -> 
+bool_exp -> relation_and_exp rel_loop
+var -> IDENT (i)
+vars -> var
+statement -> WRITE vars
+stmnt -> statement SEMICOLON
+statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF
+stmnt -> statement SEMICOLON
+var -> IDENT (i)
+neg -> 
+var -> IDENT (i)
+term_fork -> var
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+neg -> 
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> 
+multiplicative_exp -> term term_loop
+mult_loop -> 
+mult_loop -> ADD multiplicative_exp mult_loop
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> stmnt statement SEMICOLON
+statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP
+stmnt -> stmnt statement SEMICOLON
 block -> decl BEGIN_PROGRAM stmnt
-program -> PROGRAM IDENT SEMICOLON block END_PROGRAM
+program -> PROGRAM IDENT (primes) SEMICOLON block END_PROGRAM

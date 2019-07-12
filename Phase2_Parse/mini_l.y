@@ -48,17 +48,15 @@ array_of: /* EMPTY */                                   {printf("array_of -> \n"
           | ARRAY L_PAREN NUMBER R_PAREN OF             {printf("array_of -> ARRAY L_PAREN NUMBER R_PAREN OF\n");}
           ;
 statement: var ASSIGN expression                        {printf("statement -> var ASSIGN expression\n");}
-/*            | IF bool_exp THEN stmnt2 ENDIF */
-           | IF bool_exp THEN stmnt ELSE stmnt ENDIF    {printf("statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF\n");}
-           | WHILE bool_exp BEGINLOOP stmnt ENDLOOP    {printf("statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP\n");}
-           | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp {printf("statement -> DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp\n");}
+           | IF bool_exp THEN stmnt stmnt2 ENDIF        {printf("statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF\n");}
+           | WHILE bool_exp BEGINLOOP stmnt ENDLOOP     {printf("statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP\n");}
+           | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp  {printf("statement -> DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp\n");}
            | READ vars                                  {printf("statement -> READ vars\n");}
            | WRITE vars                                 {printf("statement -> WRITE vars\n");}
            | CONTINUE                                   {printf("statement -> CONTINUE\n");}
            ;
-/* stmnt2: stmnt stmnt3 */
-/* stmnt3:  */
-/*         | ELSE stmnt */
+stmnt2:  
+      | ELSE stmnt 
 vars: vars COMMA var                                    {printf("vars -> vars COMMA var\n");}
       | var                                             {printf("vars -> var\n");}
       ;
