@@ -1,3 +1,16 @@
-IDENT test
-IDENT stuff
-IDENT here
+identifiers -> IDENT
+array_of -> ~e
+declaration -> identifiers COLON array_of INTEGER
+decl -> declaration SEMICOLON
+var -> IDENT
+neg -> ~e
+term_fork -> NUMBER
+term -> neg term_fork
+term_loop -> ~e
+multiplicative_exp -> term term_loop
+mult_loop -> ~e
+expression -> multiplicative_exp mult_loop
+statement -> var ASSIGN expression
+stmnt -> statement SEMICOLON
+block -> decl BEGIN_PROGRAM stmnt
+program -> PROGRAM IDENT SEMICOLON block END_PROGRAM

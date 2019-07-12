@@ -1,1 +1,1 @@
-cat test.txt | ./mini_l > output.txt
+./mini_l mytest.min > output.txt

@@ -66,7 +66,7 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 ">="                {currPos += yyleng; return GTE;}
 
  /*** Identifiers and Numbers ***/
-{IDENTIFIER}        {currPos += yyleng; yylval.dval = atof(yytext); return IDENT;}
+{IDENTIFIER}        {currPos += yyleng; yylval.sval = strdup(yytext); return IDENT;}
 {DIGIT}+            {currPos += yyleng; yylval.dval = atof(yytext); return NUMBER;}
 
  /*** Other Special Symbols ***/
@@ -80,8 +80,8 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 {IDENT_DIGIT}       {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", currLine, currPos, yytext); currPos += yyleng;}
 {IDENT_UNDERSCORE}  {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", currLine, currPos, yytext); currPos += yyleng;}
 
-["\t"|" "]          {/* ignore spaces */ currPos += yyleng;}
-["\n"|"\r"]         {currLine++; currPos = 1;}
+["\t"|" "]+          {/* ignore spaces */ currPos += yyleng;}
+["\n"|"\r\n"]         {currLine++; currPos = 1;}
 
 {COMMENT}           {currPos += yyleng;}
 
