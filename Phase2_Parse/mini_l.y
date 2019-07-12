@@ -44,7 +44,7 @@ declaration: identifiers COLON array_of INTEGER         {printf("declaration -> 
 identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT (%s)\n", $3);}
              | IDENT                                    {printf("identifiers -> IDENT (%s)\n", $1);}
              ;
-array_of: /* EMPTY */                                   {printf("array_of -> ~e\n");}
+array_of: /* EMPTY */                                   {printf("array_of -> \n");}
           | ARRAY L_PAREN NUMBER R_PAREN OF             {printf("array_of -> ARRAY L_PAREN NUMBER R_PAREN OF\n");}
           ;
 statement: var ASSIGN expression                        {printf("statement -> var ASSIGN expression\n");}
@@ -66,19 +66,19 @@ vars: vars COMMA var                                    {printf("vars -> vars CO
 bool_exp: relation_and_exp rel_loop                     {printf("bool_exp -> relation_and_exp rel_loop\n");}
           ;
 rel_loop: OR relation_and_exp rel_loop                  {printf("rel_loop -> OR relation_and_exp rel_loop\n");}
-          | /* EMPTY */                                 {printf("rel_loop -> ~e\n");}
+          | /* EMPTY */                                 {printf("rel_loop -> \n");}
           ;
 
 relation_and_exp: relation_exp rel_loop2                {printf("relation_and_exp -> relation_exp rel_loop2\n");}
                   ;
 rel_loop2: AND relation_exp rel_loop2                   {printf("rel_loop2 -> AND relation_exp rel_loop2\n");}
-           | /* EMPTY */                                {printf("rel_loop2 -> ~e\n");}
+           | /* EMPTY */                                {printf("rel_loop2 -> \n");}
            ;
 
 relation_exp: not_exp fork                              {printf("relation_exp -> not_exp fork\n");}
               ;
 not_exp: NOT                                            {printf("not_exp -> expression comp expression\n");}
-         | /* EMPTY */                                  {printf("not_exp -> ~e\n");}
+         | /* EMPTY */                                  {printf("not_exp -> \n");}
          ;
 fork: expression comp expression                        {printf("fork -> NOT\n");}
       | TRUE                                            {printf("fork -> TRUE\n");}
@@ -86,7 +86,7 @@ fork: expression comp expression                        {printf("fork -> NOT\n")
       | L_PAREN bool_exp R_PAREN                        {printf("fork -> L_PAREN bool_exp R_PAREN\n");}
       ;
 
-comp: EQ                                                {printf("comp -> ~e\n");}
+comp: EQ                                                {printf("comp -> \n");}
       | NEQ                                             {printf("comp -> NEQ\n");}
       | LT                                              {printf("comp -> LT\n");}
       | GT                                              {printf("comp -> GT\n");}
@@ -98,7 +98,7 @@ expression: multiplicative_exp mult_loop                {printf("expression -> m
             ;
 mult_loop: ADD multiplicative_exp mult_loop             {printf("mult_loop -> ADD multiplicative_exp mult_loop\n");}
            | SUB multiplicative_exp mult_loop           {printf("mult_loop -> SUB multiplicative_exp mult_loop\n");}
-           | /* EMPTY */                                {printf("mult_loop -> ~e\n");}
+           | /* EMPTY */                                {printf("mult_loop -> \n");}
            ;
 
 multiplicative_exp: term term_loop                      {printf("multiplicative_exp -> term term_loop\n");}
@@ -106,13 +106,13 @@ multiplicative_exp: term term_loop                      {printf("multiplicative_
 term_loop: MULT term term_loop                          {printf("term_loop -> MULT term term_loop\n");}
            | DIV term term_loop                         {printf("term_loop -> DIV term term_loop\n");}
            | MOD term term_loop                         {printf("term_loop -> MOD term term_loop\n");}
-           | /* EMPTY */                                {printf("term_loop -> ~e\n");}
+           | /* EMPTY */                                {printf("term_loop -> \n");}
            ;
 
 term: neg term_fork                                     {printf("term -> neg term_fork\n");}
       ;
 neg: SUB                                                {printf("neg -> SUB\n");}
-     | /* EMPTY */                                      {printf("neg -> ~e\n");}
+     | /* EMPTY */                                      {printf("neg -> \n");}
      ;
 term_fork: var                                          {printf("term_fork -> var\n");}
            | NUMBER                                     {printf("term_fork -> NUMBER\n");}
