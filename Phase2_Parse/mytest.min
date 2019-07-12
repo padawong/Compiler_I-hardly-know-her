@@ -1,9 +1,0 @@
-program mytest;
-
-  n : integer;
-
-  beginprogram
-
-  n := 3;
-
-endprogram

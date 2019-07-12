@@ -67,7 +67,7 @@ IDENT_UNDERSCORE {ALPHA}({DIGIT}|{ALPHA})*(_({DIGIT}|{ALPHA})+)*_+
 
  /*** Identifiers and Numbers ***/
 {IDENTIFIER}        {currPos += yyleng; yylval.sval = strdup(yytext); return IDENT;}
-{DIGIT}+            {currPos += yyleng; yylval.dval = atof(yytext); return NUMBER;}
+{DIGIT}+            {currPos += yyleng; yylval.ival = atof(yytext); return NUMBER;}
 
  /*** Other Special Symbols ***/
 ";"                 {currPos += yyleng; return SEMICOLON;}
