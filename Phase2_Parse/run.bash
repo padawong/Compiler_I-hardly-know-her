@@ -1,1 +1,1 @@
-./mini_l mytest.min > output.txt
+./parser mytest.min > output.txt

@@ -1,6 +1,4 @@
-/* calculator. */
-
-/* Section 1: */
+/* Section 2: */
 %{
  #include <stdio.h>
  #include <stdlib.h>
@@ -15,22 +13,29 @@
   char* sval;
 }
 
-%error-verbose
+%define parse.lac full
+%define parse.error verbose
 %start program                            /* start of grammar like S' */
 %token PROGRAM BEGIN_PROGRAM END_PROGRAM INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE READ WRITE AND OR NOT TRUE FALSE SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA L_PAREN R_PAREN ASSIGN END
 %token <ival> NUMBER
 %token <sval> IDENT
 %type <sval> block
-%left ADD SUB                        /* lower precedence */
-%left MULT DIV                          /* higher precedence */
-/* %nonassoc SUB */
+%right ASSIGN                   /* lower precedence 9 */
+%left OR                        /* middle precedence 8 */
+%left AND                       /* middle precedence 7 */
+%right NOT                      /* middle precedence 6 */
+%left EQ NEQ LT GT LTE GTE      /* middle precedence 5 */
+%left ADD SUB                   /* middle precedence 4 */
+%left MULT DIV MOD              /* middle precedence 3 */
+%nonassoc UMINUS                /* middle precedence 2 */
+%left L_PAREN R_PAREN           /* higher precedence 1 */
 
 
-%% 
-program: PROGRAM IDENT SEMICOLON block END_PROGRAM       {printf("program -> PROGRAM IDENT (%s) SEMICOLON block END_PROGRAM\n", $2);} 
+%%
+program: PROGRAM IDENT SEMICOLON block END_PROGRAM      {printf("program -> PROGRAM IDENT (%s) SEMICOLON block END_PROGRAM\n", $2);}
          ;
 
-block: decl BEGIN_PROGRAM stmnt                          {printf("block -> decl BEGIN_PROGRAM stmnt\n");}
+block: decl BEGIN_PROGRAM stmnt                         {printf("block -> decl BEGIN_PROGRAM stmnt\n");}
        ;
 decl: decl declaration SEMICOLON                        {printf("decl -> decl declaration SEMICOLON\n");}
       | declaration SEMICOLON                           {printf("decl -> declaration SEMICOLON\n");}
@@ -44,7 +49,7 @@ declaration: identifiers COLON array_of INTEGER         {printf("declaration -> 
 identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT (%s)\n", $3);}
              | IDENT                                    {printf("identifiers -> IDENT (%s)\n", $1);}
              ;
-array_of: /* EMPTY */                                   {printf("array_of -> \n");}
+array_of: /* EMPTY */                                   {printf("array_of ->\n");}
           | ARRAY L_PAREN NUMBER R_PAREN OF             {printf("array_of -> ARRAY L_PAREN NUMBER R_PAREN OF\n");}
           ;
 statement: var ASSIGN expression                        {printf("statement -> var ASSIGN expression\n");}
@@ -55,36 +60,35 @@ statement: var ASSIGN expression                        {printf("statement -> va
            | WRITE vars                                 {printf("statement -> WRITE vars\n");}
            | CONTINUE                                   {printf("statement -> CONTINUE\n");}
            ;
-stmnt2:  
-      | ELSE stmnt 
+stmnt2: /* EMPTY */                                     {printf("stmnt2 ->\n");}
+        | ELSE stmnt                                    {printf("stmnt2 -> ELSE stmnt\n");}
+        ;
 vars: vars COMMA var                                    {printf("vars -> vars COMMA var\n");}
       | var                                             {printf("vars -> var\n");}
       ;
 
 bool_exp: relation_and_exp rel_loop                     {printf("bool_exp -> relation_and_exp rel_loop\n");}
           ;
-rel_loop: OR relation_and_exp rel_loop                  {printf("rel_loop -> OR relation_and_exp rel_loop\n");}
-          | /* EMPTY */                                 {printf("rel_loop -> \n");}
+rel_loop: /* EMPTY */                                   {printf("rel_loop ->\n");}
+          | OR relation_and_exp rel_loop                {printf("rel_loop -> OR relation_and_exp rel_loop\n");}
           ;
 
 relation_and_exp: relation_exp rel_loop2                {printf("relation_and_exp -> relation_exp rel_loop2\n");}
                   ;
-rel_loop2: AND relation_exp rel_loop2                   {printf("rel_loop2 -> AND relation_exp rel_loop2\n");}
-           | /* EMPTY */                                {printf("rel_loop2 -> \n");}
+rel_loop2: /* EMPTY */                                  {printf("rel_loop2 ->\n");}
+           | AND relation_exp rel_loop2                 {printf("rel_loop2 -> AND relation_exp rel_loop2\n");}
            ;
 
-relation_exp: not_exp fork                              {printf("relation_exp -> not_exp fork\n");}
+relation_exp: fork                                      {printf("relation_exp -> fork\n");}
+              | NOT fork                                {printf("relation_exp -> NOT fork\n");}
               ;
-not_exp: NOT                                            {printf("not_exp -> expression comp expression\n");}
-         | /* EMPTY */                                  {printf("not_exp -> \n");}
-         ;
-fork: expression comp expression                        {printf("fork -> NOT\n");}
+fork: expression comp expression                        {printf("fork -> expression comp expression\n");}
       | TRUE                                            {printf("fork -> TRUE\n");}
       | FALSE                                           {printf("fork -> FALSE\n");}
       | L_PAREN bool_exp R_PAREN                        {printf("fork -> L_PAREN bool_exp R_PAREN\n");}
       ;
 
-comp: EQ                                                {printf("comp -> \n");}
+comp: EQ                                                {printf("comp -> EQ\n");}
       | NEQ                                             {printf("comp -> NEQ\n");}
       | LT                                              {printf("comp -> LT\n");}
       | GT                                              {printf("comp -> GT\n");}
@@ -94,32 +98,35 @@ comp: EQ                                                {printf("comp -> \n");}
 
 expression: multiplicative_exp mult_loop                {printf("expression -> multiplicative_exp mult_loop\n");}
             ;
-mult_loop: ADD multiplicative_exp mult_loop             {printf("mult_loop -> ADD multiplicative_exp mult_loop\n");}
+
+mult_loop: /* EMPTY */                                  {printf("mult_loop -> \n");}
+           | ADD multiplicative_exp mult_loop           {printf("mult_loop -> ADD multiplicative_exp mult_loop\n");}
            | SUB multiplicative_exp mult_loop           {printf("mult_loop -> SUB multiplicative_exp mult_loop\n");}
-           | /* EMPTY */                                {printf("mult_loop -> \n");}
            ;
 
 multiplicative_exp: term term_loop                      {printf("multiplicative_exp -> term term_loop\n");}
                     ;
-term_loop: MULT term term_loop                          {printf("term_loop -> MULT term term_loop\n");}
+
+term_loop: /* EMPTY */                                  {printf("term_loop -> \n");}
+           | MULT term term_loop                        {printf("term_loop -> MULT term term_loop\n");}
            | DIV term term_loop                         {printf("term_loop -> DIV term term_loop\n");}
            | MOD term term_loop                         {printf("term_loop -> MOD term term_loop\n");}
-           | /* EMPTY */                                {printf("term_loop -> \n");}
            ;
 
-term: neg term_fork                                     {printf("term -> neg term_fork\n");}
+term: SUB var %prec UMINUS                              {printf("term -> SUB var\n");}
+      | SUB NUMBER %prec UMINUS                         {printf("term -> SUB NUMBER\n");}
+      | SUB L_PAREN expression R_PAREN %prec UMINUS     {printf("term -> SUB L_PAREN expression R_PAREN\n");}
+      | var                                             {printf("term -> var\n");}
+      | NUMBER                                          {printf("term -> NUMBER\n");}
+      | L_PAREN expression R_PAREN                      {printf("term -> L_PAREN expression R_PAREN\n");}
       ;
-neg: SUB                                                {printf("neg -> SUB\n");}
-     | /* EMPTY */                                      {printf("neg -> \n");}
-     ;
-term_fork: var                                          {printf("term_fork -> var\n");}
-           | NUMBER                                     {printf("term_fork -> NUMBER\n");}
-           | L_PAREN expression R_PAREN                 {printf("term_fork -> L_PAREN expression R_PAREN\n");}
-           ;
 
-var: IDENT                                              {printf("var -> IDENT (%s)\n", $1);}
-     | IDENT L_PAREN expression R_PAREN                 {printf("var -> IDENT (%s) L_PAREN expression R_PAREN\n", $1);}
+var: IDENT var_exp                                      {printf("var -> IDENT (%s) var_exp\n", $1);}
      ;
+
+var_exp: /* EMPTY */                                    {printf("var_exp ->\n");}
+         | L_PAREN expression R_PAREN                   {printf("var_exp -> L_PAREN expression R_PAREN\n");}
+         ;
 
 %%
 
