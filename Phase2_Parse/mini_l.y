@@ -1,4 +1,4 @@
-/* calculator. */
+/* error handling from https://www.gnu.org/software/bison/manual/bison.html#Error-Recovery */
 
 /* Section 1: */
 %{
@@ -53,6 +53,7 @@ array_of: /* EMPTY */                                   {printf("array_of -> \n"
         ;
 statement: var ASSIGN expression                        {printf("statement -> var ASSIGN expression\n");}
          | var error expression
+// TODO: check for dangling else
          | IF bool_exp THEN stmnt stmnt2 ENDIF          {printf("statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF\n");}
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP       {printf("statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP\n");}
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp    {printf("statement -> DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp\n");}
