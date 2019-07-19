@@ -69,6 +69,7 @@ statement: var ASSIGN expression                        {printf("statement -> va
          | READ vars                                    {printf("statement -> READ vars\n");}
          | WRITE vars                                   {printf("statement -> WRITE vars\n");}
          | CONTINUE                                     {printf("statement -> CONTINUE\n");}
+         | error                                         
          ;
 
 stmnt2: /* EMPTY */                                     {printf("stmnt2 ->\n");}
