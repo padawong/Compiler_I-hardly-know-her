@@ -5,3 +5,11 @@ parse: mini_l.lex mini_l.y
 
 clean:
 	rm -f lex.yy.c y.tab.* y.output *.o parser
+output:
+	sudo rsub output1.txt
+	sudo rsub output2.txt
+	sudo rsub output3.txt
+testfiles:
+	sudo rsub test1.txt
+	sudo rsub test2.txt
+	sudo rsub test3.txt
