@@ -50,10 +50,7 @@ stmnt: stmnt statement SEMICOLON                        {printf("stmnt -> stmnt 
      ;
 
 declaration: identifiers COLON array_of INTEGER         {printf("declaration -> identifiers COLON array_of INTEGER\n");}
-           | identifiers error INTEGER                  {printf("declaration -> identifiers error INTEGER\n");}
-           | identifiers error '\n'                     {printf("declaration -> identifiers error '\n'\n");}
-           | identifiers error COMMA                    {printf("declaration -> identifiers error COMMA\n");}
-           | identifiers error SEMICOLON                {printf("declaration -> identifiers error SEMICOLON\n");}
+           | identifiers error INTEGER                  {printf("   ':' or ',' expected\n");}
            ;
 
 identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT (%s)\n", $3);}
@@ -65,7 +62,6 @@ array_of: /* EMPTY */                                   {printf("array_of ->\n")
         ;
 
 statement: var ASSIGN expression                        {printf("statement -> var ASSIGN expression\n");}
-         | var error expression                         {printf("statement -> var error expression\n");}
                                                         // TODO: check for dangling else
          | IF bool_exp THEN stmnt stmnt2 ENDIF          {printf("statement -> IF bool_exp THEN stmnt ELSE stmnt ENDIF\n");}
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP       {printf("statement -> WHILE bool_exp BEGINLOOP stmnt ENDLOOP\n");}
