@@ -3,10 +3,13 @@
 %{
  #include <stdio.h>
  #include <stdlib.h>
+ #include <unordered_map>
  void yyerror(const char *msg);         /* function delcared at bottom */
  extern int currLine;                   /* from .lex file */
  extern int currPos;                    /* from .lex file */
- FILE * yyin; /* used to read tokens in from .lex file */
+ // Changed
+ extern FILE * yyin; /* used to read tokens in from .lex file */
+ extern int yylex(void);
 %}
 
 %union{
