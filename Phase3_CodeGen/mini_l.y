@@ -3,6 +3,7 @@
 %{
  #include <stdio.h>
  #include <stdlib.h>
+ #include <string>
  #include <unordered_map>
  void yyerror(const char *msg);         /* function delcared at bottom */
  extern int currLine;                   /* from .lex file */
@@ -15,6 +16,13 @@
 %union{
   int ival;
   char* sval;
+
+  struct ExpStruct{
+    std::string code;
+    std::string result_id;
+  };
+
+  std::unordered_map<std::string, int> scalars; // symbol table used for variable declarations (?)
 }
 
 %define parse.lac full
@@ -24,6 +32,7 @@
 %token <ival> NUMBER
 %token <sval> IDENT
 %type <sval> block
+%type <ExpStruct> exp
 %right ASSIGN                   /* lower precedence 9 */
 %left OR                        /* middle precedence 8 */
 %left AND                       /* middle precedence 7 */
