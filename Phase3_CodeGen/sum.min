@@ -1,0 +1,28 @@
+##  Compute the sum of two integers and output the sum. 
+## 
+##  Requires two specified integers a and b as input, assumed to be < 1000.
+
+program sum;
+
+a, b : integer;
+i : integer;
+result: integer;
+
+beginprogram	## main program
+    ## read inputs
+    read a;
+    read b;
+
+    ## init
+    result := 0;
+
+    ## compute accumulative sum
+    i := a;
+    while i <= b beginloop
+	result := result + i;
+    	i := i + 1;
+    endloop;
+    
+    ## print the sum 
+    write result;
+endprogram
