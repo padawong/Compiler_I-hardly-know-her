@@ -12,6 +12,8 @@
  extern FILE * yyin; /* used to read tokens in from .lex file */
  extern int yylex(void);
  std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
+ int label_num = 0;
+ std::string make_label();
 %}
 
 %union{
@@ -49,7 +51,6 @@
 
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
-              
               ofstream os;
               os.open("mil_code.mil");
               os << $4;
@@ -87,29 +88,40 @@ stmnt: stmnt statement SEMICOLON
 
 declaration: identifiers COLON array_of INTEGER
             {
+                std::string vars($1.result_id);
+                std::string temp;
+                std::string variable;
+                bool more_vars = true;
 
+                while(more_vars){
+
+                }
+
+                std::string temp;
+                temp.append("\t. _");
+                temp.append($1.result_id);
+                temp.append('\n');
             }
            | identifiers error INTEGER
            ;
 
 identifiers: identifiers COMMA IDENT
             {
-
+                std::string temp;
+                temp.append($1.result_id);
+                temp.append($3);
+                $$.result_id = strdup(temp.c_str());
+                $$.code = strdup(empty);
             }
            | IDENT
             {
-
+                $$.result_id = strdup($1);
+                $$.code = strdup(empty);
             }
            ;
 
 array_of: /* EMPTY */
-            {
-             
-            }
         | ARRAY L_PAREN NUMBER R_PAREN OF
-            {
-              
-            }
         ;
 
 statement: var ASSIGN expression
@@ -148,7 +160,7 @@ vars: vars COMMA var
             }
     ;
 
-bool_exp: relation_and_exp rel_loop           ---
+bool_exp: relation_and_exp rel_loop
             {
               
             }
@@ -158,7 +170,7 @@ rel_loop: /* EMPTY */
         | OR relation_and_exp rel_loop
         ;
 
-relation_and_exp: relation_exp rel_loop2           ---
+relation_and_exp: relation_exp rel_loop2
             {
               
             }
@@ -168,55 +180,34 @@ rel_loop2: /* EMPTY */
          | AND relation_exp rel_loop2
          ;
 
-relation_exp: fork           ---
+relation_exp: fork
             {
               
             }
             | NOT fork
             ;
 
-fork: expression comp expression           ---
+fork: expression comp expression
             {
               
             }
     | TRUE
-            {
-              
-            }
     | FALSE
-            {
-              
-            }
     | L_PAREN bool_exp R_PAREN
     ;
 
-comp: EQ           ---
-            {
-              
-            }
+comp: EQ
     | NEQ
-            {
-              
-            }
     | LT
-            {
-              
-            }
     | GT
-            {
-              
-            }
     | LTE
             {
               
             }
     | GTE
-            {
-              
-            }
     ;
 
-expression: multiplicative_exp mult_loop           ---
+expression: multiplicative_exp mult_loop
             {
               
             }
@@ -230,13 +221,13 @@ mult_loop: /* EMPTY */
          | SUB multiplicative_exp mult_loop
          ;
 
-multiplicative_exp: term term_loop           ---
+multiplicative_exp: term term_loop
             {
               
             }
                   ;
 
-term_loop: /* EMPTY */           ---
+term_loop: /* EMPTY */
             {
               
             }
@@ -250,29 +241,36 @@ term: SUB var %prec UMINUS
     | SUB L_PAREN expression R_PAREN %prec UMINUS
     | var
             {
-              
+                $$.result_id = std::to_string($1.result_id);
+                $$.code = strdup(empty);
             }
     | NUMBER
             {
-              
+                $$.result_id = std::to_string($1);
+                $$.code = strdup(empty);
             }
     | L_PAREN expression R_PAREN
     ;
 
 var: IDENT var_exp
             {
-              
+                $$.result_id = std::to_string($1);
+                $$.code = strdup(empty);
             }
    ;
 
 var_exp: /* EMPTY */
-            {
-             
-            }
        | L_PAREN expression R_PAREN
        ;
 
 %%
+
+std::string make_label() {
+    std::string temp;
+    temp = ": L" + std::to_string(label_num);
+    label_num++;
+    return temp;
+}
 
 int main(int argc, char **argv) {
    if (argc > 1) {
