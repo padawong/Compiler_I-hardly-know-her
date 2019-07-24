@@ -11,6 +11,7 @@
  // Changed
  extern FILE * yyin; /* used to read tokens in from .lex file */
  extern int yylex(void);
+ std::unordered_map<std::string, int> variables; // symbol table used for variable declarations (?)
 %}
 
 %union{
@@ -18,11 +19,10 @@
   char* sval;
 
   struct ExpStruct{
-    std::string code;
-    std::string result_id;
-  };
+    char* code;
+    char* result_id;
+  } exp;
 
-  std::unordered_map<std::string, int> scalars; // symbol table used for variable declarations (?)
 }
 
 %define parse.lac full
@@ -32,7 +32,7 @@
 %token <ival> NUMBER
 %token <sval> IDENT
 %type <sval> block
-%type <ExpStruct> exp
+%type <ExpStruct> /* NON-TERMINALS GO HERE */
 %right ASSIGN                   /* lower precedence 9 */
 %left OR                        /* middle precedence 8 */
 %left AND                       /* middle precedence 7 */
@@ -61,12 +61,17 @@ stmnt: stmnt statement SEMICOLON                        {printf("stmnt -> stmnt 
      | statement SEMICOLON                              {printf("stmnt -> statement SEMICOLON\n");}
      ;
 
-declaration: identifiers COLON array_of INTEGER         {printf("declaration -> identifiers COLON array_of INTEGER\n");}
+declaration: identifiers COLON array_of INTEGER
+                {
+                    std::string 
+                }   
            | identifiers error INTEGER                  {printf("   ':' or ',' expected\n");}
            ;
 
 identifiers: identifiers COMMA IDENT                    {printf("identifiers -> identifiers COMMA IDENT (%s)\n", $3);}
-           | IDENT                                      {printf("identifiers -> IDENT (%s)\n", $1);}
+           | IDENT
+                {
+                    std::string 
            ;
 
 array_of: /* EMPTY */                                   {printf("array_of ->\n");}
