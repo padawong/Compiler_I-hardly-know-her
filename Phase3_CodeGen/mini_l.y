@@ -13,7 +13,11 @@
  extern int yylex(void);
  std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
  int label_num = 0;
+ int temp_var_num = 0;
+ int comp_var_num = 0;
  std::string make_label();
+ std::string make_temp_var();
+ std::string make_comp_var();
 %}
 
 %union{
@@ -94,7 +98,7 @@ declaration: identifiers COLON array_of INTEGER
                 bool more_vars = true;
 
                 while(more_vars){
-
+                    
                 }
 
                 std::string temp;
@@ -109,14 +113,15 @@ identifiers: identifiers COMMA IDENT
             {
                 std::string temp;
                 temp.append($1.result_id);
+                temp.append(' ');
                 temp.append($3);
-                $$.result_id = strdup(temp.c_str());
-                $$.code = strdup(empty);
+                $$.result_id = temp.c_str();
+                $$.code = '';
             }
            | IDENT
             {
-                $$.result_id = strdup($1);
-                $$.code = strdup(empty);
+                $$.result_id = $1;
+                $$.code = '';
             }
            ;
 
@@ -208,29 +213,36 @@ comp: EQ
     ;
 
 expression: multiplicative_exp mult_loop
-            {
-              
+            { // include operand and code
+                std::string temp;
+                temp = std::to_string(stoi($1.result_id) + stoi($2.result_id));
+                $$.result_id = temp.c_str();
+                $$.code = '';
             }
           ;
 
 mult_loop: /* EMPTY */
+            {
+                $$.result_id = "0";
+            }
          | ADD multiplicative_exp mult_loop
             {
-             
+                std::string temp;
+                temp = std::to_string(stoi($2.result_id) + stoi($3.result_id));
+                $$.result_id = temp.c_str();
+                $$.code = '';
             }
          | SUB multiplicative_exp mult_loop
          ;
 
 multiplicative_exp: term term_loop
             {
-              
+                $$.result_id = $1.result_id;
+                $$.code = '';
             }
                   ;
 
 term_loop: /* EMPTY */
-            {
-              
-            }
          | MULT term term_loop
          | DIV term term_loop
          | MOD term term_loop
@@ -241,21 +253,23 @@ term: SUB var %prec UMINUS
     | SUB L_PAREN expression R_PAREN %prec UMINUS
     | var
             {
-                $$.result_id = std::to_string($1.result_id);
-                $$.code = strdup(empty);
+                $$.result_id = $1.result_id;
+                $$.code = $1.code;
             }
     | NUMBER
             {
-                $$.result_id = std::to_string($1);
-                $$.code = strdup(empty);
+                $$.result_id = std::to_string($1).c_str();
+                $$.code = $$.result_id;
             }
     | L_PAREN expression R_PAREN
     ;
 
 var: IDENT var_exp
             {
-                $$.result_id = std::to_string($1);
-                $$.code = strdup(empty);
+                std::string temp;
+                $$.result_id = std::to_string($1).c_str();
+                temp = "_" + std::to_string($1);
+                $$.code = temp.c_str(); 
             }
    ;
 
@@ -269,6 +283,18 @@ std::string make_label() {
     std::string temp;
     temp = ": L" + std::to_string(label_num);
     label_num++;
+    return temp;
+}
+std::string make_temp_var() {
+    std::string temp;
+    temp = "t" + std::to_string(temp_var_num);
+    temp_var_num++;
+    return temp;
+}
+std::string make_comp_var() {
+    std::string temp;
+    temp = "p" + std::to_string(comp_var_num);
+    comp_var_num++;
     return temp;
 }
 
