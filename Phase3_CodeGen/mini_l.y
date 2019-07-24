@@ -50,12 +50,18 @@
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
               
+              ofstream os;
+              os.open("mil_code.mil");
+              os << $4;
             }
        ;
 
 block: decl BEGIN_PROGRAM stmnt
             {
-              
+              std::string temp;
+              temp.append($1.code);
+              temp.append($3.code);
+              $$ = temp.c_str();
             }
      ;
 
@@ -81,35 +87,18 @@ stmnt: stmnt statement SEMICOLON
 
 declaration: identifiers COLON array_of INTEGER
             {
-                std::string vars($1.result_id);
-                std::string temp;
-                std::string variable;
-                bool more_vars = true;
 
-                while(more_vars){
-
-                }
-              
-                std::string temp;
-                temp.append("\t. _");
-                temp.append($1.result_id);
-                temp.append('\n');
             }
            | identifiers error INTEGER
            ;
 
 identifiers: identifiers COMMA IDENT
             {
-                std::string temp;
-                temp.append($1.result_id);
-                temp.append($3.result_id);
-                $$.result_id = strdup(temp.c_str());
-                $$.code = strdup(empty);
+
             }
            | IDENT
             {
-                $$.result_id = strdup($1.result_id);
-                $$.code = strdup(empty);
+
             }
            ;
 
@@ -175,13 +164,13 @@ vars: vars COMMA var
             }
     ;
 
-bool_exp: relation_and_exp rel_loop
+bool_exp: relation_and_exp rel_loop           ---
             {
               
             }
         ;
 
-rel_loop: /* EMPTY */
+rel_loop: /* EMPTY */           ---
             {
               
             }
@@ -191,13 +180,13 @@ rel_loop: /* EMPTY */
             }
         ;
 
-relation_and_exp: relation_exp rel_loop2
+relation_and_exp: relation_exp rel_loop2           ---
             {
               
             }
                 ;
 
-rel_loop2: /* EMPTY */
+rel_loop2: /* EMPTY */           ---
             {
               
             }
@@ -207,7 +196,7 @@ rel_loop2: /* EMPTY */
             }
          ;
 
-relation_exp: fork
+relation_exp: fork           ---
             {
               
             }
@@ -217,7 +206,7 @@ relation_exp: fork
             }
             ;
 
-fork: expression comp expression
+fork: expression comp expression           ---
             {
               
             }
@@ -235,7 +224,7 @@ fork: expression comp expression
             }
     ;
 
-comp: EQ
+comp: EQ           ---
             {
               
             }
@@ -261,13 +250,13 @@ comp: EQ
             }
     ;
 
-expression: multiplicative_exp mult_loop
+expression: multiplicative_exp mult_loop           ---
             {
               
             }
           ;
 
-mult_loop: /* EMPTY */
+mult_loop: /* EMPTY */           ---
             {
               
             }
@@ -281,13 +270,13 @@ mult_loop: /* EMPTY */
             }
          ;
 
-multiplicative_exp: term term_loop
+multiplicative_exp: term term_loop           ---
             {
               
             }
                   ;
 
-term_loop: /* EMPTY */
+term_loop: /* EMPTY */           ---
             {
               
             }
@@ -305,7 +294,7 @@ term_loop: /* EMPTY */
             }
          ;
 
-term: SUB var %prec UMINUS
+term: SUB var %prec UMINUS           ---
             {
               
             }
@@ -357,6 +346,8 @@ int main(int argc, char **argv) {
       }//end if
    }//end if
    yyparse(); // Calls yylex() for tokens.
+
+
    return 0;
 }
 
