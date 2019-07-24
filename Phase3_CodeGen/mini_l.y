@@ -48,169 +48,169 @@
 
 
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
-{
-  
-}
+            {
+              
+            }
        ;
 
 block: decl BEGIN_PROGRAM stmnt
-{
-  
-}
+            {
+              
+            }
      ;
 
 decl: decl declaration SEMICOLON
-    {
-      
-    }
+            {
+              
+            }
     | declaration SEMICOLON
-    {
-      
-    }
+            {
+              
+            }
     ;
 
 stmnt: stmnt statement SEMICOLON
-     {
-        
-     }
+            {
+                
+            }
      | statement SEMICOLON
-     {
-      
-     }
+            {
+             
+            }
      ;
 
 declaration: identifiers COLON array_of INTEGER
-           {
-              std::string vars($1.result_id);
-              std::string temp;
-              std::string variable;
-              bool more_vars = true;
+            {
+                std::string vars($1.result_id);
+                std::string temp;
+                std::string variable;
+                bool more_vars = true;
 
-              while(more_vars){
+                while(more_vars){
 
-              }
+                }
               
-              std::string temp;
-              temp.append("\t. _");
-              temp.append($1.result_id);
-              temp.append('\n');
-           }
+                std::string temp;
+                temp.append("\t. _");
+                temp.append($1.result_id);
+                temp.append('\n');
+            }
            | identifiers error INTEGER
            ;
 
 identifiers: identifiers COMMA IDENT
-           {
-              std::string temp;
-              temp.append($1.result_id);
-              temp.append($3.result_id);
-              $$.result_id = strdup(temp.c_str());
-              $$.code = strdup(empty);
-           }
+            {
+                std::string temp;
+                temp.append($1.result_id);
+                temp.append($3.result_id);
+                $$.result_id = strdup(temp.c_str());
+                $$.code = strdup(empty);
+            }
            | IDENT
-           {
-              $$.result_id = strdup($1.result_id);
-              $$.code = strdup(empty);
-           }
+            {
+                $$.result_id = strdup($1.result_id);
+                $$.code = strdup(empty);
+            }
            ;
 
 array_of: /* EMPTY */
-        {
-         
-        }
+            {
+             
+            }
         | ARRAY L_PAREN NUMBER R_PAREN OF
-        {
-          
-        }
+            {
+              
+            }
         ;
 
 statement: var ASSIGN expression
-{
-  
-}
+            {
+              
+            }
                                                         // TODO: check for dangling else
          | IF bool_exp THEN stmnt stmnt2 ENDIF
-         {
-          
-         }
+            {
+             
+            }
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
-         {
-          
-         }
+            {
+             
+            }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
-         {
-          
-         }
+            {
+             
+            }
          | READ vars
-         {
-          
-         }
+            {
+             
+            }
          | WRITE vars
-         {
-          
-         }
+            {
+             
+            }
          | CONTINUE
-         {
-          
-         }
+            {
+             
+            }
          | error
          ;
 
 stmnt2: /* EMPTY */
-         {
-          
-         }
+            {
+             
+            }
       | ELSE stmnt
-      {
-        
-      }
+            {
+              
+            }
       ;
 
 vars: vars COMMA var
-{
-  
-}
+            {
+              
+            }
     | var
-    {
-      
-    }
+            {
+              
+            }
     ;
 
 bool_exp: relation_and_exp rel_loop
-{
-  
-}
+            {
+              
+            }
         ;
 
 rel_loop: /* EMPTY */
-        {
-          
-        }
+            {
+              
+            }
         | OR relation_and_exp rel_loop
-        {
-          
-        }
+            {
+              
+            }
         ;
 
 relation_and_exp: relation_exp rel_loop2
-{
-  
-}
+            {
+              
+            }
                 ;
 
 rel_loop2: /* EMPTY */
-                {
-                  
-                }
+            {
+              
+            }
          | AND relation_exp rel_loop2
-         {
-          
-         }
+            {
+             
+            }
          ;
 
 relation_exp: fork
-{
-  
-}
+            {
+              
+            }
             | NOT fork
             {
               
@@ -218,133 +218,133 @@ relation_exp: fork
             ;
 
 fork: expression comp expression
-{
-  
-}
+            {
+              
+            }
     | TRUE
-    {
-      
-    }
+            {
+              
+            }
     | FALSE
-    {
-      
-    }
+            {
+              
+            }
     | L_PAREN bool_exp R_PAREN
-    {
-      
-    }
+            {
+              
+            }
     ;
 
 comp: EQ
-{
-  
-}
+            {
+              
+            }
     | NEQ
-    {
-      
-    }
+            {
+              
+            }
     | LT
-    {
-      
-    }
+            {
+              
+            }
     | GT
-    {
-      
-    }
+            {
+              
+            }
     | LTE
-    {
-      
-    }
+            {
+              
+            }
     | GTE
-    {
-      
-    }
+            {
+              
+            }
     ;
 
 expression: multiplicative_exp mult_loop
-{
-  
-}
+            {
+              
+            }
           ;
 
 mult_loop: /* EMPTY */
-          {
-            
-          }
+            {
+              
+            }
          | ADD multiplicative_exp mult_loop
-         {
-          
-         }
+            {
+             
+            }
          | SUB multiplicative_exp mult_loop
-         {
-          
-         }
+            {
+             
+            }
          ;
 
 multiplicative_exp: term term_loop
-{
-  
-}
+            {
+              
+            }
                   ;
 
 term_loop: /* EMPTY */
-                  {
-                    
-                  }
+            {
+              
+            }
          | MULT term term_loop
-         {
-          
-         }
+            {
+            
+            }
          | DIV term term_loop
-         {
-          
-         }
+            {
+             
+            }
          | MOD term term_loop
-         {
-          
-         }
+            {
+             
+            }
          ;
 
 term: SUB var %prec UMINUS
-{
-  
-}
+            {
+              
+            }
     | SUB NUMBER %prec UMINUS
-    {
-      
-    }
+            {
+              
+            }
     | SUB L_PAREN expression R_PAREN %prec UMINUS
-    {
-      
-    }
+            {
+              
+            }
     | var
-    {
-      
-    }
+            {
+              
+            }
     | NUMBER
-    {
-      
-    }
+            {
+              
+            }
     | L_PAREN expression R_PAREN
-    {
-      
-    }
+            {
+              
+            }
     ;
 
 var: IDENT var_exp
-{
-  
-}
+            {
+              
+            }
    ;
 
 var_exp: /* EMPTY */
-   {
-    
-   }
+            {
+             
+            }
        | L_PAREN expression R_PAREN
-       {
-        
-       }
+            {
+             
+            }
        ;
 
 %%
