@@ -136,7 +136,12 @@ statement: var ASSIGN expression
          | IF bool_exp THEN stmnt stmnt2 ENDIF
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
             {
-             
+                // Label
+                // bool
+                // result of bool
+                // ?:= goto
+                // body of while-loop
+                // goto Label
             }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
          | READ vars
@@ -157,17 +162,20 @@ stmnt2: /* EMPTY */
 
 vars: vars COMMA var
             {
-              
+                 
             }
     | var
             {
-              
+                $$.result_id = $1.result_id;
+                $$.code = $1.code;
             }
     ;
 
 bool_exp: relation_and_exp rel_loop
             {
-              
+                // Or should this be something else?
+                $$.result_id = $1.result_id;
+                $$.code = $1.code;
             }
         ;
 
@@ -177,7 +185,8 @@ rel_loop: /* EMPTY */
 
 relation_and_exp: relation_exp rel_loop2
             {
-              
+                $$.result_id = $1.result_id;
+                $$.code = $1.code;
             }
                 ;
 
@@ -187,27 +196,62 @@ rel_loop2: /* EMPTY */
 
 relation_exp: fork
             {
-              
+                $$.result_id = $1.result_id;
+                $$.code = $1.code;
             }
             | NOT fork
             ;
 
 fork: expression comp expression
             {
-              
+                std::string compare; 
+                std::string temp;
+
+                if ($2.result_id == "<=") {
+                    if (stoi($1.result_id) <= stoi($3.result_id)) {
+                        compare = "true";
+                    }
+                    else {
+                        compare = "false";
+                    }
+                }
+                else if ($2.result_id == "==") {
+                    if (stoi($1.result_id) == stoi($3.result_id)) {
+                        compare = "true";
+                    }
+                    else {
+                        compare = "false";
+                    }
+                }
+
+                else {
+                    // :'(
+                }
+
+                fork.result_id = compare.c_str();
+
+                temp = $2.result_id + make_comp_var() + ", " + $1.code + ", " + $3.code + "\n";
+                fork.code = temp.c_str();
             }
     | TRUE
     | FALSE
     | L_PAREN bool_exp R_PAREN
     ;
 
-comp: EQ
+komp: EQ
+            {
+                std::string temp;
+                $$.result_id = "==";
+                $$.code = '';
+            }
     | NEQ
     | LT
     | GT
     | LTE
             {
-              
+                std::string temp;
+                $$.result_id = "<=";
+                $$.code = '';
             }
     | GTE
     ;
