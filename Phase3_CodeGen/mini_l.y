@@ -127,19 +127,12 @@ statement: var ASSIGN expression
             {
               
             }
-                                                        // TODO: check for dangling else
          | IF bool_exp THEN stmnt stmnt2 ENDIF
-            {
-             
-            }
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
             {
              
             }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
-            {
-             
-            }
          | READ vars
             {
              
@@ -149,20 +142,11 @@ statement: var ASSIGN expression
              
             }
          | CONTINUE
-            {
-             
-            }
          | error
          ;
 
 stmnt2: /* EMPTY */
-            {
-             
-            }
       | ELSE stmnt
-            {
-              
-            }
       ;
 
 vars: vars COMMA var
@@ -182,13 +166,7 @@ bool_exp: relation_and_exp rel_loop
         ;
 
 rel_loop: /* EMPTY */
-            {
-              
-            }
         | OR relation_and_exp rel_loop
-            {
-              
-            }
         ;
 
 relation_and_exp: relation_exp rel_loop2
@@ -198,13 +176,7 @@ relation_and_exp: relation_exp rel_loop2
                 ;
 
 rel_loop2: /* EMPTY */
-            {
-              
-            }
          | AND relation_exp rel_loop2
-            {
-             
-            }
          ;
 
 relation_exp: fork
@@ -212,9 +184,6 @@ relation_exp: fork
               
             }
             | NOT fork
-            {
-              
-            }
             ;
 
 fork: expression comp expression
@@ -230,9 +199,6 @@ fork: expression comp expression
               
             }
     | L_PAREN bool_exp R_PAREN
-            {
-              
-            }
     ;
 
 comp: EQ
@@ -268,17 +234,11 @@ expression: multiplicative_exp mult_loop
           ;
 
 mult_loop: /* EMPTY */
-            {
-              
-            }
          | ADD multiplicative_exp mult_loop
             {
              
             }
          | SUB multiplicative_exp mult_loop
-            {
-             
-            }
          ;
 
 multiplicative_exp: term term_loop
@@ -292,31 +252,13 @@ term_loop: /* EMPTY */
               
             }
          | MULT term term_loop
-            {
-            
-            }
          | DIV term term_loop
-            {
-             
-            }
          | MOD term term_loop
-            {
-             
-            }
          ;
 
 term: SUB var %prec UMINUS
-            {
-              
-            }
     | SUB NUMBER %prec UMINUS
-            {
-              
-            }
     | SUB L_PAREN expression R_PAREN %prec UMINUS
-            {
-              
-            }
     | var
             {
               
@@ -326,9 +268,6 @@ term: SUB var %prec UMINUS
               
             }
     | L_PAREN expression R_PAREN
-            {
-              
-            }
     ;
 
 var: IDENT var_exp
@@ -342,9 +281,6 @@ var_exp: /* EMPTY */
              
             }
        | L_PAREN expression R_PAREN
-            {
-             
-            }
        ;
 
 %%
