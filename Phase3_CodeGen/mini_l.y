@@ -32,7 +32,7 @@
 %token <ival> NUMBER
 %token <sval> IDENT
 %type <sval> block
-%type <ExpStruct> /* NON-TERMINALS GO HERE */
+%type <ExpStruct> /* NON-TERMINALS GO HERE */ identifiers declaration decl stmnt statement var expression bool_exp stmnt2 vars relation_and_exp rel_loop relation_exp rel_loop2 fork comp multiplicative_exp mult_loop term term_loop var_exp
 %right ASSIGN                   /* lower precedence 9 */
 %left OR                        /* middle precedence 8 */
 %left AND                       /* middle precedence 7 */
