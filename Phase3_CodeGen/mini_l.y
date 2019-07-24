@@ -60,9 +60,9 @@ block: decl BEGIN_PROGRAM stmnt
      ;
 
 decl: decl declaration SEMICOLON
-{
-  
-}
+    {
+      
+    }
     | declaration SEMICOLON
     {
       
@@ -70,9 +70,9 @@ decl: decl declaration SEMICOLON
     ;
 
 stmnt: stmnt statement SEMICOLON
-{
-  
-}
+     {
+        
+     }
      | statement SEMICOLON
      {
       
@@ -80,29 +80,43 @@ stmnt: stmnt statement SEMICOLON
      ;
 
 declaration: identifiers COLON array_of INTEGER
-{
-  std::string
-}
-           | identifiers error INTEGER
            {
-            
+              std::string vars($1.result_id);
+              std::string temp;
+              std::string variable;
+              bool more_vars = true;
+
+              while(more_vars){
+
+              }
+              
+              std::string temp;
+              temp.append("\t. _");
+              temp.append($1.result_id);
+              temp.append('\n');
            }
+           | identifiers error INTEGER
            ;
 
 identifiers: identifiers COMMA IDENT
-{
-  
-}
+           {
+              std::string temp;
+              temp.append($1.result_id);
+              temp.append($3.result_id);
+              $$.result_id = strdup(temp.c_str());
+              $$.code = strdup(empty);
+           }
            | IDENT
            {
-            std::string
+              $$.result_id = strdup($1.result_id);
+              $$.code = strdup(empty);
            }
            ;
 
 array_of: /* EMPTY */
-           {
-            
-           }
+        {
+         
+        }
         | ARRAY L_PAREN NUMBER R_PAREN OF
         {
           
