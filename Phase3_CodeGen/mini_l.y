@@ -11,7 +11,7 @@
  // Changed
  extern FILE * yyin; /* used to read tokens in from .lex file */
  extern int yylex(void);
- std::unordered_map<std::string, int> scalars;
+ std::unordered_map<std::string, int> variables; // symbol table used for variable declarations (?)
 %}
 
 %union{
@@ -21,7 +21,7 @@
   struct ExpStruct{
     char* code;
     char* result_id;
-  };
+  } exp;
 
 }
 
@@ -32,7 +32,7 @@
 %token <ival> NUMBER
 %token <sval> IDENT
 %type <sval> block
-%type <ExpStruct> expression
+%type <ExpStruct> /* NON-TERMINALS GO HERE */
 %right ASSIGN                   /* lower precedence 9 */
 %left OR                        /* middle precedence 8 */
 %left AND                       /* middle precedence 7 */
@@ -81,7 +81,7 @@ stmnt: stmnt statement SEMICOLON
 
 declaration: identifiers COLON array_of INTEGER
 {
-  
+  std::string
 }
            | identifiers error INTEGER
            {
@@ -95,7 +95,7 @@ identifiers: identifiers COMMA IDENT
 }
            | IDENT
            {
-            
+            std::string
            }
            ;
 
