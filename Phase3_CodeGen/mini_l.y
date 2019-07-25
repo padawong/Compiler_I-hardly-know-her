@@ -136,12 +136,44 @@ statement: var ASSIGN expression
          | IF bool_exp THEN stmnt stmnt2 ENDIF
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
             {
-                // Label
-                // bool
-                // result of bool
-                // ?:= goto
-                // body of while-loop
-                // goto Label
+              std::string temp_result_id;
+              std::string temp_code;
+              std::string temp_comp_var;
+              std::string temp_label_0;
+              std::string temp_label_1;
+              std::string temp;
+            // Label
+              temp_label_0 = make_label();
+              temp_code.append(temp_label_0); // L0
+            // bool
+              temp = "\t";
+              temp.append($2.code);
+              temp_code.append(temp.c_str());
+            // result of bool
+              std::string bullshit;           // p0
+              for(int i = 3; i < strlen($2.code); i++){
+                if($2.code[i] != ','){
+                  bullshit.append($2.code[i]);
+                }else{ break; }
+              }
+              temp_comp_var = make_comp_var(); // p1
+              temp = "\t";
+              temp.append("== " + temp_comp_var + ", " + bullshit + ", 0\n");
+              temp_code.append(temp.c_str());
+            // ?:= goto
+              temp_label_1 = make_label();
+              temp = "\t";
+              temp.append("?:= " + temp_label_1 + ", " + temp_comp_var + "\n");
+              temp_code.append(temp.c_str());
+
+            // body of while-loop
+              temp_code.append($4.code); // assuming this ends with '\n'
+            // goto Label
+              temp = "\t";
+              temp.append(":= " + temp_label_0 + "\n");
+              temp_code.append(temp.c_str());
+              // this bitch is done !!!
+              // ok ;-;
             }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
          | READ vars
@@ -173,9 +205,9 @@ vars: vars COMMA var
 
 bool_exp: relation_and_exp rel_loop
             {
-                // Or should this be something else?
-                $$.result_id = $1.result_id;
-                $$.code = $1.code;
+              // Or should this be something else?
+              $$.result_id = $1.result_id;
+              $$.code = $1.code;
             }
         ;
 
@@ -228,10 +260,10 @@ fork: expression comp expression
                     // :'(
                 }
 
-                fork.result_id = compare.c_str();
+                $$.result_id = compare.c_str();
 
                 temp = $2.result_id + make_comp_var() + ", " + $1.code + ", " + $3.code + "\n";
-                fork.code = temp.c_str();
+                $$.code = temp.c_str();
             }
     | TRUE
     | FALSE
@@ -325,7 +357,7 @@ var_exp: /* EMPTY */
 
 std::string make_label() {
     std::string temp;
-    temp = ": L" + std::to_string(label_num);
+    temp = ": L" + std::to_string(label_num) + "\n";
     label_num++;
     return temp;
 }
