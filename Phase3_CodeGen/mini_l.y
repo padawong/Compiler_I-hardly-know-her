@@ -2,6 +2,7 @@
 /* error handling from https://www.gnu.org/software/bison/manual/bison.html#Error-Recovery */
 %{
  #include <stdio.h>
+ #include <iostream>
  #include <stdlib.h>
  #include <string>
  #include <unordered_map>
@@ -197,13 +198,54 @@ statement: var ASSIGN expression
             // ok ;-;
             }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
-         | READ vars
+         | READ identifiers
             {
-             
+                // NOTE: can add a check to see if key does not exist in map; if does not exist, throw error
+                // see if the identifier is already in the map
+                // if not, add entry
+                // if so, change value
+                while ($2.result_id.size() > 0) {
+                    std::string temp_ident;
+                    // Separate each identifier
+                    for (int i = 0; i < $2.result_id.size(); i++) {
+                        if (result_id.at(i) != ' ') {
+                            temp_ident.push_back(result_id.at(i));
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    // Populate the value for the current identifier
+                    // std::string input;
+                    // std::cin >> input;
+                    // $$.result_id = to_string(n).c_str();
+                    
+                    // variables[temp_ident].result_id = input;
+
+                    std::string temp;
+                    temp = "\t.< _" + temp_ident + "\n";
+                    $$.code.append() = temp.c_str(); 
+                }
             }
-         | WRITE vars
+         | WRITE identifiers
             {
-             
+                //iterate through identifiers and write out for each
+                while ($2.result_id.size() > 0) {
+                    std::string temp_ident;
+                    // Separate each identifier
+                    for (int i = 0; i < $2.result_id.size(); i++) {
+                        if (result_id.at(i) != ' ') {
+                            temp_ident.push_back(result_id.at(i));
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    std::string temp;
+                    temp = "\t.> _" + temp_ident + "\n";
+                    $$.code.append() = temp.c_str(); 
             }
          | CONTINUE
          | error
@@ -215,11 +257,16 @@ stmnt2: /* EMPTY */
 
 vars: vars COMMA var
             {
-                 
+                std::string temp;
+                temp.append($1.result_id + ',');
+                $$.result_id = temp.c_str(); 
+                // .code ?
             }
     | var
-            {
-                $$.result_id = $1.result_id;
+            { 
+                std::string temp;
+                temp.append($1.result_id);
+                $$.result_id = temp.c_str();
                 $$.code = $1.code;
             }
     ;
