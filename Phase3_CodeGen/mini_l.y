@@ -347,7 +347,7 @@ fork: expression comp expression
                 string temp;
 
                 if ($2.result_id == "<=") {
-                    if (stoi($1.result_id) <= stoi($3.result_id)) {
+                    if (atoi($1.result_id) <= atoi($3.result_id)) {
                         compare = "true";
                     }
                     else {
@@ -355,7 +355,7 @@ fork: expression comp expression
                     }
                 }
                 else if ($2.result_id == "==") {
-                    if (stoi($1.result_id) == stoi($3.result_id)) {
+                    if (atoi($1.result_id) == atoi($3.result_id)) {
                         compare = "true";
                     }
                     else {
@@ -410,7 +410,7 @@ expression: multiplicative_exp mult_loop
                 string temp_var = make_temp_var();
                 temp = "\t+ ";
                 if ($2.code == temp.c_str()) {
-                    temp = to_string(stoi($2.result_id) + stoi($1.result_id)); // temp = operand + operand
+                    temp = to_string(atoi($2.result_id) + atoi($1.result_id)); // temp = operand + operand
                 }
                 $$.result_id = temp.c_str(); // result_id = operand + operand numerical value
             
@@ -495,6 +495,10 @@ var: IDENT var_exp
                 temp_id = $1;
                 $$.result_id = temp_id.c_str();
                 temp_code = "_" + temp_id;
+                
+                //cout << "1) var -> IDENT temp_code = " << temp_code << endl;
+                //cout << "2) var -> IDENT temp_id = " << temp_id << endl;
+
                 $$.code = temp_code.c_str(); 
                 cout << $$.code << endl;
             }
