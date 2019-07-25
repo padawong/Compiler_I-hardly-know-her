@@ -131,49 +131,53 @@ array_of: /* EMPTY */
 
 statement: var ASSIGN expression
             {
-              
+                std::string temp;
+                $1.result_id = $3.result_id; //x := 3 + 2;
+                
+                temp = $3.code
+                
             }
          | IF bool_exp THEN stmnt stmnt2 ENDIF
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
             {
-              std::string temp_result_id;
-              std::string temp_code;
-              std::string temp_comp_var;
-              std::string temp_label_0;
-              std::string temp_label_1;
-              std::string temp;
+                std::string temp_result_id;
+                std::string temp_code;
+                std::string temp_comp_var;
+                std::string temp_label_0;
+                std::string temp_label_1;
+                std::string temp;
             // Label
-              temp_label_0 = make_label();
-              temp_code.append(temp_label_0); // L0
+                temp_label_0 = make_label();
+                temp_code.append(temp_label_0); // L0
             // bool
-              temp = "\t";
-              temp.append($2.code);
-              temp_code.append(temp.c_str());
+                temp = "\t";
+                temp.append($2.code);
+                temp_code.append(temp.c_str());
             // result of bool
-              std::string bullshit;           // p0
-              for(int i = 3; i < strlen($2.code); i++){
-                if($2.code[i] != ','){
-                  bullshit.append($2.code[i]);
-                }else{ break; }
-              }
-              temp_comp_var = make_comp_var(); // p1
-              temp = "\t";
-              temp.append("== " + temp_comp_var + ", " + bullshit + ", 0\n");
-              temp_code.append(temp.c_str());
+                std::string bullshit;           // p0
+                for(int i = 3; i < strlen($2.code); i++){
+                    if($2.code[i] != ','){
+                        bullshit.append($2.code[i]);
+                    }else{ break; }
+                }
+                temp_comp_var = make_comp_var(); // p1
+                temp = "\t";
+                temp.append("== " + temp_comp_var + ", " + bullshit + ", 0\n");
+                temp_code.append(temp.c_str());
             // ?:= goto
-              temp_label_1 = make_label();
-              temp = "\t";
-              temp.append("?:= " + temp_label_1 + ", " + temp_comp_var + "\n");
-              temp_code.append(temp.c_str());
+                temp_label_1 = make_label();
+                temp = "\t";
+                temp.append("?:= " + temp_label_1 + ", " + temp_comp_var + "\n");
+                temp_code.append(temp.c_str());
 
             // body of while-loop
-              temp_code.append($4.code); // assuming this ends with '\n'
+                temp_code.append($4.code); // assuming this ends with '\n'
             // goto Label
-              temp = "\t";
-              temp.append(":= " + temp_label_0 + "\n");
-              temp_code.append(temp.c_str());
-              // this bitch is done !!!
-              // ok ;-;
+                temp = "\t";
+                temp.append(":= " + temp_label_0 + "\n");
+                temp_code.append(temp.c_str());
+            // this bitch is done !!!
+            // ok ;-;
             }
          | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
          | READ vars
@@ -291,22 +295,27 @@ komp: EQ
 expression: multiplicative_exp mult_loop
             { // include operand and code
                 std::string temp;
-                temp = std::to_string(stoi($1.result_id) + stoi($2.result_id));
-                $$.result_id = temp.c_str();
-                $$.code = '';
+                if ($2.code == "\t+ ") {
+                    temp = to_string(stoi($2.result_id) + stoi($1.result_id)); // temp = operand + operand
+                }
+                $$.result_id = temp.c_str(); // result_id = operand + operand numerical value
+            
+                temp = $2.code + $1.result_id + ", " + $2.result_id + "\n";
+                $$.code = temp.c_str();
             }
           ;
 
 mult_loop: /* EMPTY */
             {
-                $$.result_id = "0";
+                $$.result_id = 0;
             }
          | ADD multiplicative_exp mult_loop
             {
-                std::string temp;
-                temp = std::to_string(stoi($2.result_id) + stoi($3.result_id));
-                $$.result_id = temp.c_str();
-                $$.code = '';
+                // NOTE: if we had looping additions, how would we separate the +s in the code?
+                int temp = stoi($2.result_id) + stoi($3.result_id);
+                $$.result_id = to_string(temp).c_str(); // result_id = operand (NUMBER or IDENT)
+                std::string temp_str = "\t+ ";
+                $$.code = temp_str.c_str();
             }
          | SUB multiplicative_exp mult_loop
          ;
@@ -314,7 +323,7 @@ mult_loop: /* EMPTY */
 multiplicative_exp: term term_loop
             {
                 $$.result_id = $1.result_id;
-                $$.code = '';
+                $$.code = $1.code;
             }
                   ;
 
