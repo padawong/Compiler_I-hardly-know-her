@@ -15,10 +15,10 @@
  extern int yylex(void);
  using namespace std;
 
-struct ExpStruct{
+ struct ExpStruct{
     char* code;
     char* result_id;
-} exp;
+ } exp;
 
  std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
  int label_num = 0;
@@ -32,10 +32,7 @@ struct ExpStruct{
 %union{
   int ival;
   char* sval;
-struct ExpStruct{
-    char* code;
-    char* result_id;
-} exp;
+struct ExpStruct exp;
 
 }
 
@@ -45,7 +42,7 @@ struct ExpStruct{
 %token PROGRAM BEGIN_PROGRAM END_PROGRAM INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE READ WRITE AND OR NOT TRUE FALSE SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA L_PAREN R_PAREN ASSIGN END
 %token <ival> NUMBER
 %token <sval> IDENT
-%type <ExpStruct> /* NON-TERMINALS GO HERE */ program block identifiers declaration decl stmnt statement var expression bool_exp stmnt2 vars relation_and_exp rel_loop relation_exp rel_loop2 fork comp multiplicative_exp mult_loop term term_loop var_exp
+%type <exp> /* NON-TERMINALS GO HERE */ program block identifiers declaration decl stmnt statement var expression bool_exp stmnt2 vars relation_and_exp rel_loop relation_exp rel_loop2 fork comp multiplicative_exp mult_loop term term_loop var_exp
 %right ASSIGN                   /* lower precedence 9 */
 %left OR                        /* middle precedence 8 */
 %left AND                       /* middle precedence 7 */
