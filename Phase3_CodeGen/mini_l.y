@@ -132,10 +132,27 @@ array_of: /* EMPTY */
 statement: var ASSIGN expression
             {
                 std::string temp;
-                $1.result_id = $3.result_id; //x := 3 + 2;
-                
-                temp = $3.code
-                
+                std::string temp_code;
+                std::string reversed_temp;
+                // $1.result_id = $3.result_id; //x := 3 + 2;
+                int commas = 2;
+                for(int i = strlen($3.code) - 1; i > 0; i--){
+                    if($3.code[i] == ','){
+                      commas--;
+                    }
+                    if(commas == 0){
+                      if($3.code[i] == ' '){
+                        break;
+                      }else{
+                        reversed_temp.append($3.code[i])
+                      }
+                    }
+                }
+                for(int i = 0; i < reversed_temp.size(); i++){
+                  temp.append(reversed_temp[i]);
+                }
+                temp_code = "\t=" + $1.code + ", " + temp + "\n";
+                $$.code = temp_code.c_str();
             }
          | IF bool_exp THEN stmnt stmnt2 ENDIF
          | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
@@ -274,7 +291,7 @@ fork: expression comp expression
     | L_PAREN bool_exp R_PAREN
     ;
 
-komp: EQ
+comp: EQ
             {
                 std::string temp;
                 $$.result_id = "==";
@@ -295,12 +312,13 @@ komp: EQ
 expression: multiplicative_exp mult_loop
             { // include operand and code
                 std::string temp;
+                std::string temp_var = make_temp_var();
                 if ($2.code == "\t+ ") {
                     temp = to_string(stoi($2.result_id) + stoi($1.result_id)); // temp = operand + operand
                 }
                 $$.result_id = temp.c_str(); // result_id = operand + operand numerical value
             
-                temp = $2.code + $1.result_id + ", " + $2.result_id + "\n";
+                temp = $2.code + temp_var + "," + $1.result_id + ", " + $2.result_id + "\n";
                 $$.code = temp.c_str();
             }
           ;
