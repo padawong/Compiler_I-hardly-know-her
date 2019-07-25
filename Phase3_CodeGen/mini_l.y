@@ -7,6 +7,7 @@
  #include <iostream>
  #include <stdlib.h>
  #include <string>
+ #include <string.h>
  #include <unordered_map>
  void yyerror(const char *msg);         /* function delcared at bottom */
  extern int currLine;                   /* from .lex file */
@@ -17,7 +18,7 @@
  using namespace std;
 
  struct ExpStruct{
-    char* code;
+    const char* code;
     char* result_id;
  } exp;
 
