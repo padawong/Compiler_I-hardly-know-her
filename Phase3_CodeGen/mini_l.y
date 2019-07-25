@@ -3,6 +3,7 @@
 %{
  #include <stdio.h>
  #include <fstream>
+ #include <iostream>
  #include <stdlib.h>
  #include <string>
  #include <unordered_map>
@@ -12,6 +13,7 @@
  // Changed
  extern FILE * yyin; /* used to read tokens in from .lex file */
  extern int yylex(void);
+ using namespace std;
 
 struct ExpStruct{
     char* code;
@@ -30,6 +32,11 @@ struct ExpStruct{
 %union{
   int ival;
   char* sval;
+struct ExpStruct{
+    char* code;
+    char* result_id;
+} exp;
+
 }
 
 %define parse.lac full
@@ -55,7 +62,7 @@ struct ExpStruct{
 
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
-                ofstream os;
+                std::ofstream os;
                 os.open("mil_code.mil");
                     os << $4.code;
                 os.close();
