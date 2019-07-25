@@ -19,7 +19,7 @@
 
  struct ExpStruct{
     const char* code;
-    char* result_id;
+    const char* result_id;
  } exp;
 
  std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
@@ -116,13 +116,13 @@ declaration: identifiers COLON array_of INTEGER
                 std::string temp;
                 int i = 0, var_list_size = strlen($1.result_id);
                 for (; i < var_list_size; i++) {
-                    if ($1.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                    if ($1.result_id[i] == ' ' || i == var_list_size - 1 ) {
                         temp = "\t. _" + temp_ident + "\n";
-                        $$.code.append(temp.c_str());
+                        $$.code = temp.c_str();
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($1.result_id.at(i));
+                        temp_ident.push_back($1.result_id[i]);
                     }
                 }
             }
@@ -134,7 +134,7 @@ identifiers: identifiers COMMA IDENT
             {
                 std::string temp;
                 temp.append($1.result_id);
-                temp.append(' ');
+                temp.append(" ");
                 temp.append($3);
                 $$.result_id = temp.c_str();
             }
@@ -165,15 +165,15 @@ statement: var ASSIGN expression
                       if($3.code[i] == ' '){
                         break;
                       }else{
-                        reversed_temp.append($3.code[i]);
+                        reversed_temp.push_back($3.code[i]);
                       }
                     }
                 }
                 for(int i = 0; i < reversed_temp.size(); i++){
-                  temp.append(reversed_temp[i]);
+                  temp.push_back(reversed_temp[i]);
                 }
-                temp_code = "\t=" + $1.code + ", " + temp + "\n";
-                $$.code = temp_code;
+                temp_code = std::string("\t=") + $1.code + ", " + temp + "\n";
+                $$.code = temp_code.c_str();
             }
             | IF bool_exp THEN stmnt stmnt2 ENDIF
             {}
@@ -196,7 +196,7 @@ statement: var ASSIGN expression
                 std::string bullshit;           // p0
                 for(int i = 3; i < strlen($2.code); i++){
                     if($2.code[i] != ','){
-                        bullshit.append($2.code[i]);
+                        bullshit.push_back($2.code[i]);
                     }else{ break; }
                 }
                 temp_comp_var = make_comp_var(); // p1
@@ -231,13 +231,13 @@ statement: var ASSIGN expression
                 std::string temp;
                 int i = 0, var_list_size = strlen($2.result_id);
                 for (; i < var_list_size; i++) {
-                    if ($2.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                    if ($2.result_id[i] == ' ' || i == var_list_size - 1 ) {
                         temp = "\t.< _" + temp_ident + "\n";
-                        $$.code.append(temp.c_str());
+                        $$.code = temp.c_str();
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($2.result_id.at(i));
+                        temp_ident.push_back($2.result_id[i]);
                     }
                 }
             }
@@ -249,7 +249,7 @@ statement: var ASSIGN expression
                 for (; i < var_list_size; i++) {
                     if ($2.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
                         temp = "\t.> _" + temp_ident + "\n";
-                        $$.code.append(temp.c_str());
+                        $$.code = temp.c_str();
                         temp_ident.clear();
                     }
                     else {
