@@ -22,20 +22,23 @@
     const char* result_id;
  } exp;
 
- std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
+ unordered_map<string, ExpStruct> variables; // symbol table used for variable declarations (?)
  int label_num = 0;
  int temp_var_num = 0;
  int comp_var_num = 0;
- std::string make_label();
- std::string make_temp_var();
- std::string make_comp_var();
+ string make_label();
+ string make_temp_var();
+ string make_comp_var();
 %}
 
 %union{
   int ival;
   char* sval;
-struct ExpStruct exp;
 
+ struct ExpStruct{
+    const char* code;
+    const char* result_id;
+ } exp;
 }
 
 %define parse.lac full
@@ -61,7 +64,7 @@ struct ExpStruct exp;
 
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
-                std::ofstream os;
+                ofstream os;
                 os.open("mil_code.mil");
                     os << $4.code;
                 os.close();
@@ -70,7 +73,7 @@ program: PROGRAM IDENT SEMICOLON block END_PROGRAM
 
 block: decl BEGIN_PROGRAM stmnt
             {
-                std::string temp;
+                string temp;
                 temp.append($1.code);
                 temp.append(": START\n");
                 temp.append($3.code);
@@ -80,7 +83,7 @@ block: decl BEGIN_PROGRAM stmnt
 
 decl: decl declaration SEMICOLON
             {
-                std::string temp;
+                string temp;
                 temp.append($1.code);
                 temp.append($2.code);
                 $$.code = temp.c_str();
@@ -93,7 +96,7 @@ decl: decl declaration SEMICOLON
 
 stmnt: stmnt statement SEMICOLON
             {
-                std::string temp;
+                string temp;
                 temp.append($1.code);
                 temp.append($2.code);
                 $$.code = temp.c_str();
@@ -112,8 +115,8 @@ declaration: identifiers COLON array_of INTEGER
 
                 // identifiers: list of var names (n1 n2 n3...)
 
-                std::string temp_ident;
-                std::string temp;
+                string temp_ident;
+                string temp;
                 int i = 0, var_list_size = strlen($1.result_id);
                 for (; i < var_list_size; i++) {
                     if ($1.result_id[i] == ' ' || i == var_list_size - 1 ) {
@@ -132,7 +135,7 @@ declaration: identifiers COLON array_of INTEGER
 
 identifiers: identifiers COMMA IDENT
             {
-                std::string temp;
+                string temp;
                 temp.append($1.result_id);
                 temp.append(" ");
                 temp.append($3);
@@ -140,6 +143,7 @@ identifiers: identifiers COMMA IDENT
             }
             | IDENT
             {
+                string temp = $1;
                 $$.result_id = $1;
             }
             ;
@@ -152,9 +156,9 @@ array_of: /* EMPTY */
 
 statement: var ASSIGN expression
             {
-                std::string temp;
-                std::string temp_code;
-                std::string reversed_temp;
+                string temp;
+                string temp_code;
+                string reversed_temp;
                 // $1.result_id = $3.result_id; //x := 3 + 2;
                 int commas = 2;
                 for(int i = strlen($3.code) - 1; i > 0; i--){
@@ -172,19 +176,19 @@ statement: var ASSIGN expression
                 for(int i = 0; i < reversed_temp.size(); i++){
                   temp.push_back(reversed_temp[i]);
                 }
-                temp_code = std::string("\t=") + $1.code + ", " + temp + "\n";
+                temp_code = string("\t=") + $1.code + ", " + temp + "\n";
                 $$.code = temp_code.c_str();
             }
             | IF bool_exp THEN stmnt stmnt2 ENDIF
             {}
             | WHILE bool_exp BEGINLOOP stmnt ENDLOOP
             {
-                std::string temp_result_id;
-                std::string temp_code;
-                std::string temp_comp_var;
-                std::string temp_label_0;
-                std::string temp_label_1;
-                std::string temp;
+                string temp_result_id;
+                string temp_code;
+                string temp_comp_var;
+                string temp_label_0;
+                string temp_label_1;
+                string temp;
             // Label
                 temp_label_0 = make_label();
                 temp_code.append(temp_label_0); // L0
@@ -193,7 +197,7 @@ statement: var ASSIGN expression
                 temp.append($2.code);
                 temp_code.append(temp.c_str());
             // result of bool
-                std::string bullshit;           // p0
+                string bullshit;           // p0
                 for(int i = 3; i < strlen($2.code); i++){
                     if($2.code[i] != ','){
                         bullshit.push_back($2.code[i]);
@@ -227,8 +231,8 @@ statement: var ASSIGN expression
                 // if not, add entry
                 // if so, change value
                 // Separate each identifier
-                std::string temp_ident;
-                std::string temp;
+                string temp_ident;
+                string temp;
                 int i = 0, var_list_size = strlen($2.result_id);
                 for (; i < var_list_size; i++) {
                     if ($2.result_id[i] == ' ' || i == var_list_size - 1 ) {
@@ -243,17 +247,17 @@ statement: var ASSIGN expression
             }
             | WRITE identifiers
             {
-                std::string temp_ident;
-                std::string temp;
+                string temp_ident;
+                string temp;
                 int i = 0, var_list_size = strlen($2.result_id);
                 for (; i < var_list_size; i++) {
-                    if ($2.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                    if ($2.result_id[i] == ' ' || i == var_list_size - 1 ) {
                         temp = "\t.> _" + temp_ident + "\n";
                         $$.code = temp.c_str();
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($2.result_id.at(i));
+                        temp_ident.push_back($2.result_id[i]);
                     }
                 }
             }
@@ -271,14 +275,14 @@ stmnt2: /* EMPTY */
 
 vars: vars COMMA var
             {
-                std::string temp;
+                string temp;
                 temp.append($1.result_id + ',');
                 $$.result_id = temp.c_str(); 
                 // .code ?
             }
             | var
             { 
-                std::string temp;
+                string temp;
                 temp.append($1.result_id);
                 $$.result_id = temp.c_str();
                 $$.code = $1.code;
@@ -323,8 +327,8 @@ relation_exp: fork
 
 fork: expression comp expression
             {
-                std::string compare; 
-                std::string temp;
+                string compare; 
+                string temp;
 
                 if ($2.result_id == "<=") {
                     if (stoi($1.result_id) <= stoi($3.result_id)) {
@@ -362,7 +366,7 @@ fork: expression comp expression
 
 comp: EQ
             {
-                std::string temp;
+                string temp;
                 $$.result_id = "==";
             }
             | NEQ
@@ -373,7 +377,7 @@ comp: EQ
             {}
             | LTE
             {
-                std::string temp;
+                string temp;
                 $$.result_id = "<=";
             }
             | GTE
@@ -382,8 +386,8 @@ comp: EQ
 
 expression: multiplicative_exp mult_loop
             { // include operand and code
-                std::string temp;
-                std::string temp_var = make_temp_var();
+                string temp;
+                string temp_var = make_temp_var();
                 if ($2.code == "\t+ ") {
                     temp = to_string(stoi($2.result_id) + stoi($1.result_id)); // temp = operand + operand
                 }
@@ -403,7 +407,7 @@ mult_loop: /* EMPTY */
                 // NOTE: if we had looping additions, how would we separate the +s in the code?
                 int temp = stoi($2.result_id) + stoi($3.result_id);
                 $$.result_id = to_string(temp).c_str(); // result_id = operand (NUMBER or IDENT)
-                std::string temp_str = "\t+ ";
+                string temp_str = "\t+ ";
                 $$.code = temp_str.c_str();
             }
             | SUB multiplicative_exp mult_loop
@@ -440,7 +444,7 @@ term: SUB var %prec UMINUS
             }
             | NUMBER
             {
-                $$.result_id = std::to_string($1).c_str();
+                $$.result_id = to_string($1).c_str();
                 $$.code = $$.result_id;
             }
             | L_PAREN expression R_PAREN
@@ -449,10 +453,11 @@ term: SUB var %prec UMINUS
 
 var: IDENT var_exp
             {
-                std::string temp;
-                $$.result_id = std::to_string($1).c_str();
-                temp = "_" + std::to_string($1);
-                $$.code = temp.c_str(); 
+                string temp_id, temp_code;
+                temp_id = $1;
+                $$.result_id = temp_id.c_str();
+                temp_code = "_" + temp_id;
+                $$.code = temp_code.c_str(); 
             }
             ;
 
@@ -464,21 +469,21 @@ var_exp: /* EMPTY */
 
 %%
 
-std::string make_label() {
-    std::string temp;
-    temp = ": L" + std::to_string(label_num) + "\n";
+string make_label() {
+    string temp;
+    temp = ": L" + to_string(label_num) + "\n";
     label_num++;
     return temp;
 }
-std::string make_temp_var() {
-    std::string temp;
-    temp = "t" + std::to_string(temp_var_num);
+string make_temp_var() {
+    string temp;
+    temp = "t" + to_string(temp_var_num);
     temp_var_num++;
     return temp;
 }
-std::string make_comp_var() {
-    std::string temp;
-    temp = "p" + std::to_string(comp_var_num);
+string make_comp_var() {
+    string temp;
+    temp = "p" + to_string(comp_var_num);
     comp_var_num++;
     return temp;
 }
