@@ -98,14 +98,25 @@ declaration: identifiers COLON array_of INTEGER
                 std::string variable;
                 bool more_vars = true;
 
-                while(more_vars){
-                    
-                }
+                // insert into map newly declared variables, jk
+                // read: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // write: reference map in write for values
 
+                // identifiers: list of var names (n1 n2 n3...)
+
+                std::string temp_ident;
                 std::string temp;
-                temp.append("\t. _");
-                temp.append($1.result_id);
-                temp.append('\n');
+                int i = 0, var_list_size = strlen($1.result_id);
+                for (; i < var_list_size; i++) {
+                    if ($1.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                        temp = "\t. _" + temp_ident + "\n";
+                        $$.code.append(temp.c_str());
+                        temp_ident.clear();
+                    }
+                    else {
+                        temp_ident.push_back($1.result_id.at(i));
+                    }
+                }
             }
            | identifiers error INTEGER
            ;
@@ -145,7 +156,7 @@ statement: var ASSIGN expression
                       if($3.code[i] == ' '){
                         break;
                       }else{
-                        reversed_temp.append($3.code[i])
+                        reversed_temp.append($3.code[i]);
                       }
                     }
                 }
@@ -204,48 +215,36 @@ statement: var ASSIGN expression
                 // see if the identifier is already in the map
                 // if not, add entry
                 // if so, change value
-                while ($2.result_id.size() > 0) {
-                    std::string temp_ident;
-                    // Separate each identifier
-                    for (int i = 0; i < $2.result_id.size(); i++) {
-                        if (result_id.at(i) != ' ') {
-                            temp_ident.push_back(result_id.at(i));
-                        }
-                        else {
-                            break;
-                        }
+                // Separate each identifier
+                std::string temp_ident;
+                std::string temp;
+                int i = 0, var_list_size = strlen($2.result_id);
+                for (; i < var_list_size; i++) {
+                    if ($2.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                        temp = "\t.< _" + temp_ident + "\n";
+                        $$.code.append(temp.c_str());
+                        temp_ident.clear();
                     }
-
-                    // Populate the value for the current identifier
-                    // std::string input;
-                    // std::cin >> input;
-                    // $$.result_id = to_string(n).c_str();
-                    
-                    // variables[temp_ident].result_id = input;
-
-                    std::string temp;
-                    temp = "\t.< _" + temp_ident + "\n";
-                    $$.code.append() = temp.c_str(); 
+                    else {
+                        temp_ident.push_back($2.result_id.at(i));
+                    }
                 }
             }
          | WRITE identifiers
             {
-                //iterate through identifiers and write out for each
-                while ($2.result_id.size() > 0) {
-                    std::string temp_ident;
-                    // Separate each identifier
-                    for (int i = 0; i < $2.result_id.size(); i++) {
-                        if (result_id.at(i) != ' ') {
-                            temp_ident.push_back(result_id.at(i));
-                        }
-                        else {
-                            break;
-                        }
+                std::string temp_ident;
+                std::string temp;
+                int i = 0, var_list_size = strlen($2.result_id);
+                for (; i < var_list_size; i++) {
+                    if ($2.result_id.at(i) == ' ' || i == var_list_size - 1 ) {
+                        temp = "\t.> _" + temp_ident + "\n";
+                        $$.code.append(temp.c_str());
+                        temp_ident.clear();
                     }
-
-                    std::string temp;
-                    temp = "\t.> _" + temp_ident + "\n";
-                    $$.code.append() = temp.c_str(); 
+                    else {
+                        temp_ident.push_back($2.result_id.at(i));
+                    }
+                }
             }
          | CONTINUE
          | error
