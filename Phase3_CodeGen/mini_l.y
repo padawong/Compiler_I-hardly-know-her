@@ -142,28 +142,34 @@ declaration: identifiers COLON array_of INTEGER
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "declaration: identifiers COLON array_of INTEGER" << endl;
-                // insert into map newly declared variables, jk
-                // read: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                // write: reference map in write for values
-
-                // identifiers: list of var names (n1 n2 n3...)
+                //cout << "$1.code = " << $1.code << endl;
+                //cout << "$1.result_id = " << $1.result_id << endl;
 
                 string temp_final_ident;
                 string temp_ident;
                 string temp;
                 int i = 0, var_list_size = strlen($1.result_id);
                 for (; i <= var_list_size; i++) {
-                    if ($1.result_id[i] == ' ' || i == var_list_size) {
+                    //cout << "var_list_size = " << var_list_size << "; i = " << i << endl;
+                    //cout << "result_id[i] = " << $1.result_id[i] << endl;
+                    if (!isalnum($1.result_id[i]) || i == var_list_size) {
+                        //cout << "IFFFFFF?????????" << endl;
                         temp = "\t. _" + temp_ident + "\n";
                         temp_final_ident.append(temp);
+                        //cout << "temp = " << temp << endl;
+                        //cout << "temp_final = " << temp_final_ident << endl;
                         temp_ident.clear();
                     }
                     else {
                         temp_ident.push_back($1.result_id[i]);
+                        //cout << "\nELELLSLELLELSLEEEEE???????" << endl;
+                        //cout << "$1.result_id[i] = " << $1.result_id[i] << endl;
                     }
                 }
                 $$.code = temp_final_ident.c_str();
-                cout << $$.code << endl;
+                cout << "\n$$.code = " << $$.code << endl;
+                cout << "\n AFTER CHANGES:\t$1.code = " << $1.code << endl;
+                cout << "\t$1.result_id = " << $1.result_id << endl;
             }
             | identifiers error INTEGER
             {}
@@ -173,11 +179,16 @@ identifiers: identifiers COMMA IDENT
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "identifiers: identifiers COMMA IDENT" << endl;
+                cout << "$1.code = " << $1.code << endl;
+                cout << "$1.result_id = " << $1.result_id << endl;
                 string temp;
                 temp.append($1.result_id);
-                temp.append(" ");
+                temp.push_back(',');
                 temp.append($3);
                 $$.result_id = temp.c_str();
+
+                cout << "\n AFTER CHANGES:\t$1.code = " << $1.code << endl;
+                cout << "\t$1.result_id = " << $1.result_id << endl;
             }
             | IDENT
             {
