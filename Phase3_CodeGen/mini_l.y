@@ -2,6 +2,7 @@
 /* error handling from https://www.gnu.org/software/bison/manual/bison.html#Error-Recovery */
 %{
  #include <stdio.h>
+ #include <iostream>
  #include <fstream>
  #include <stdlib.h>
  #include <string>
@@ -12,11 +13,13 @@
  // Changed
  extern FILE * yyin; /* used to read tokens in from .lex file */
  extern int yylex(void);
+ using namespace std;
 
-struct ExpStruct{
-    char* code;
-    char* result_id;
-} exp;
+ struct ExpStruct{
+     char* code;
+     char* result_id;
+ } exp;
+
 
  std::unordered_map<std::string, ExpStruct> variables; // symbol table used for variable declarations (?)
  int label_num = 0;
@@ -55,7 +58,7 @@ struct ExpStruct{
 
 program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
-                ofstream os;
+                std::ofstream os;
                 os.open("mil_code.mil");
                     os << $4.code;
                 os.close();
@@ -100,11 +103,6 @@ stmnt: stmnt statement SEMICOLON
 
 declaration: identifiers COLON array_of INTEGER
             {
-                std::string vars($1.result_id);
-                std::string temp;
-                std::string variable;
-                bool more_vars = true;
-
                 // insert into map newly declared variables, jk
                 // read: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 // write: reference map in write for values
