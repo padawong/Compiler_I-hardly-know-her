@@ -82,7 +82,7 @@ block: decl BEGIN_PROGRAM stmnt
                 cout << "block: decl BEGIN_PROGRAM stmnt" << endl;
                 string temp;
                 // decl.code is '!' for some reason (???)
-                temp.append($1.code);
+                temp = $1.code;
 cout << "decl.code = " << temp << endl;
 
                 temp.append(": START\n");
@@ -122,18 +122,18 @@ stmnt: stmnt statement SEMICOLON
                 cout << "\n\n**************************************" << endl;
                 cout << "stmnt: stmnt statement SEMICOLON" << endl;
                 string temp;
-                temp.append($1.code);
+                temp = $1.code;
                 cout << "stmnt.code = " << $1.code << endl;
                 temp.append($2.code);
                 cout << "statement.code = " << $2.code << endl;
                 $$.code = temp.c_str();
-                cout << "$$.code + " << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
             }
             | statement SEMICOLON
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "stmnt: statement SEMICOLON" << endl;
-                $$.code = $1.code;
+                $$.code = strdup($1.code); // this fucks shit up :D
                 cout << $$.code << endl;
             }
             ;
@@ -276,6 +276,8 @@ statement: var ASSIGN expression
                 temp_code.append(temp.c_str());
             // this bitch is done !!!
             // ok ;-;
+		$$.code = temp_code.c_str();
+		cout << $$.code << endl;
             }
             | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
             {}
@@ -457,10 +459,11 @@ expression: multiplicative_exp mult_loop
                     temp = to_string(atoi($2.result_id) + atoi($1.result_id)); // temp = operand + operand
                 }
                 $$.result_id = temp.c_str(); // result_id = operand + operand numerical value
+		cout << "result_id: " << $$.result_id << endl;
             
                 temp = $2.code + temp_var + "," + $1.result_id + ", " + $2.result_id + "\n";
                 $$.code = temp.c_str();
-                cout << $$.code << endl;
+                cout << "code: " << $$.code << endl;
             }
             ;
 
@@ -468,9 +471,12 @@ mult_loop: /* EMPTY */
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "mult_loop: EMPTY" << endl;
+		string temp;
+		temp.clear();
                 $$.result_id = "0";
-                $$.code = "0";
+                $$.code = temp.c_str();
                 cout << $$.code << endl;
+		
             }
             | ADD multiplicative_exp mult_loop
             {
@@ -497,7 +503,8 @@ multiplicative_exp: term term_loop
                 cout << "multiplicative_exp: term term_loop" << endl;
                 $$.result_id = $1.result_id;
                 $$.code = $1.code;
-                cout << $$.code << endl;
+                cout << "result_id: " << $$.result_id << endl;
+                cout << "code: " << $$.code << endl;
             }
             ;
 
