@@ -82,7 +82,7 @@ block: decl BEGIN_PROGRAM stmnt
                 cout << "block: decl BEGIN_PROGRAM stmnt" << endl;
                 string temp;
                 // decl.code is '!' for some reason (???)
-                temp = $1.code;
+                temp = strdup($1.code);
 cout << "decl.code = " << temp << endl;
 
                 temp.append(": START\n");
@@ -101,11 +101,11 @@ decl: decl declaration SEMICOLON
                 cout << "\n\n**************************************" << endl;
                 cout << "decl: decl declaration SEMICOLON" << endl;
                 string temp;
-                temp.append($1.code);
+                temp.append(strdup($1.code));
 cout << "decl.code = " << $1.code << endl;
-                temp.append($2.code);
+                temp.append(strdup($2.code));
 cout << "declaration.code = " << $2.code << endl;
-                $$.code = temp.c_str();
+                $$.code = strdup(temp.c_str());
                 cout << "decl: " << $$.code << endl;
             }
             | declaration SEMICOLON
@@ -202,31 +202,15 @@ statement: var ASSIGN expression
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "statement: var ASSIGN expression" << endl;
-                string temp;
                 string temp_code;
-                string reversed_temp;
-                string saved_code;
-		saved_code = $3.code;
-                // $1.result_id = $3.result_id; //x := 3 + 2;
-                int commas = 2;
-                for(int i = saved_code.size() - 1; i > 0; i--){
-                    if(saved_code[i] == ','){
-                      commas--;
-                    }
-                    if(commas == 0){
-                      if(saved_code[i] == ' '){
-                        break;
-                      }else{
-                        reversed_temp.push_back(saved_code[i]);
-                      }
-                    }
-                }
-                for(int i = 0; i < reversed_temp.size(); i++){
-                  temp.push_back(reversed_temp[i]);
-                }
-                temp_code = string("\t:= ") + saved_code + "\n";
+                string saved_code_1;
+                string saved_code_3;
+		saved_code_1 = $1.code;
+		saved_code_3 = $3.code;
+                temp_code = string("\t= ") + saved_code_1 + ", " + saved_code_3 + "\n";
                 $$.code = strdup(temp_code.c_str());
                 cout << "$$.code = " << $$.code << endl;
+		// make this  (= 0) be this (= _result, 0) 
             }
             | IF bool_exp THEN stmnt stmnt2 ENDIF
             {}
@@ -241,8 +225,8 @@ statement: var ASSIGN expression
                 string temp_label_1;
                 string temp;
             // Label
-                temp_label_0 = make_label();
-                temp_code.append(temp_label_0); // L0
+                temp_label_0 = make_label() + "\n";
+                temp_code.append(": " + temp_label_0); // L0
             // bool
                 temp = "\t";
                 temp.append($2.code);
@@ -268,7 +252,7 @@ statement: var ASSIGN expression
                 temp_code.append($4.code); // assuming this ends with '\n'
             // goto Label
                 temp = "\t";
-                temp.append(":= " + temp_label_0 + "\n");
+                temp.append(":= " + temp_label_0 + ": " + temp_label_1 + "\n");
                 temp_code.append(temp.c_str());
             // this bitch is done !!!
             // ok ;-;
@@ -417,7 +401,7 @@ fork: expression comp expression
 
                 $$.result_id = compare.c_str();
 
-                temp = $2.result_id + make_comp_var() + ", " + $1.code + ", " + $3.code + "\n";
+                temp = string($2.result_id) + " " + make_comp_var() + ", " + $1.code + ", " + $3.code + "\n";
                 $$.code = temp.c_str();
                 cout << "$$.code = " << $$.code << endl;
             }
@@ -464,13 +448,13 @@ expression: multiplicative_exp mult_loop
 		saved_code = $2.code;
 		saved_result_id_1 = $1.result_id;
 		saved_result_id_2 = $2.result_id;
-                string temp_var = make_temp_var();
-		//cout << "$1.result_id: " << $1.result_id << endl;
-		//cout << "$1.code: " << $1.code << endl;
-		//cout << "$2.result_id: " << $2.result_id << endl;
-		//cout << "$2.code: " << $2.code << endl;
-                //cout << "saved_result_id_1: " << saved_result_id_1 << endl;
-                //cout << "saved_result_id_2: " << saved_result_id_2 << endl;
+                //string temp_var = make_temp_var();
+		cout << "$1.result_id: " << $1.result_id << endl;
+		cout << "$1.code: " << $1.code << endl;
+		cout << "$2.result_id: " << $2.result_id << endl;
+		cout << "$2.code: " << $2.code << endl;
+                cout << "saved_result_id_1: " << saved_result_id_1 << endl;
+                cout << "saved_result_id_2: " << saved_result_id_2 << endl;
 		//temp = "\t+ ";
                 //if (saved_code == temp) {
                 	//temp.append(to_string(saved_result_id_2 + saved_result_id_1)); // temp = operand + operand
@@ -479,9 +463,10 @@ expression: multiplicative_exp mult_loop
                 //$$.result_id = strdup(temp.c_str()); // result_id = operand + operand numerical value
 		// cout << "$$.result_id: " << $$.result_id << endl;
             
-                temp = saved_code + temp_var + ", " + saved_result_id_1 + ", " + saved_result_id_2 + "\n";
-                $$.code = strdup(temp.c_str());
+                //temp = saved_result_id_1 + ", " + saved_result_id_2 + "\n";
+                $$.code = strdup($1.code);
                 cout << "$$.code: " << $$.code << endl;
+		// pass only mult_exp id or code
             }
             ;
 
@@ -491,7 +476,7 @@ mult_loop: /* EMPTY */
                 cout << "mult_loop: EMPTY" << endl;
 		string temp;
 		temp.clear();
-                $$.result_id = "0";
+                $$.result_id = temp.c_str();
                 $$.code = temp.c_str();
                 cout << "$$.code = " << $$.code << endl;
 		
@@ -500,15 +485,20 @@ mult_loop: /* EMPTY */
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "mult_loop: ADD multiplicative_exp mult_loop" << endl;
-                int a, b, temp;
+                string a, b, temp;
                 string temp_str;
-                a = atoi($2.result_id);
-                b = atoi($3.result_id);
+                a = $2.result_id;
+                b = $3.result_id;
                 // NOTE: if we had looping additions, how would we separate the +s in the code?
-                temp = a + b;
-                $$.result_id = to_string(temp).c_str(); // result_id = operand (NUMBER or IDENT)
-                temp_str = "\t+ ";
-                $$.code = temp_str.c_str();
+                //temp = a + b;
+                //$$.result_id = to_string(temp).c_str(); // result_id = operand (NUMBER or IDENT)
+                //temp_str = "\t+ ";
+                //$$.code = temp_str.c_str();
+		temp = a + b;
+		$$.result_id = strdup(temp.c_str());
+		$$.code = strdup(temp.c_str());
+                cout << "$2.code = " << $2.code << endl;
+                cout << "$3.code = " << $3.code << endl;
                 cout << "$$.code = " << $$.code << endl;
             }
             | SUB multiplicative_exp mult_loop
@@ -587,7 +577,7 @@ var_exp: /* EMPTY */
 
 string make_label() {
     string temp;
-    temp = ": L" + to_string(label_num) + "\n";
+    temp = "L" + to_string(label_num);
     label_num++;
     return temp;
 }
