@@ -92,7 +92,7 @@ cout << "BLOCK TEMP = " << temp << endl;
                 temp.append($3.code);
 cout << "stmnt.code = " << $3.code << endl;
                 $$.code = temp.c_str();
-                //cout << $$.code << endl;
+                //cout << "$$.code = " << $$.code << endl;
             }
             ;
 
@@ -112,8 +112,8 @@ cout << "declaration.code = " << $2.code << endl;
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "decl: declaration SEMICOLON" << endl;
-                $$.code = $1.code;
-                cout << $$.code << endl;
+                $$.code = strdup($1.code);
+                cout << "$$.code = " << $$.code << endl;
             }
             ;
 
@@ -126,7 +126,7 @@ stmnt: stmnt statement SEMICOLON
                 cout << "stmnt.code = " << $1.code << endl;
                 temp.append($2.code);
                 cout << "statement.code = " << $2.code << endl;
-                $$.code = temp.c_str();
+                $$.code = strdup(temp.c_str());
                 cout << "$$.code = " << $$.code << endl;
             }
             | statement SEMICOLON
@@ -134,7 +134,7 @@ stmnt: stmnt statement SEMICOLON
                 cout << "\n\n**************************************" << endl;
                 cout << "stmnt: statement SEMICOLON" << endl;
                 $$.code = strdup($1.code); // this fucks shit up :D
-                cout << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
             }
             ;
 
@@ -142,34 +142,28 @@ declaration: identifiers COLON array_of INTEGER
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "declaration: identifiers COLON array_of INTEGER" << endl;
-                //cout << "$1.code = " << $1.code << endl;
-                //cout << "$1.result_id = " << $1.result_id << endl;
 
                 string temp_final_ident;
                 string temp_ident;
                 string temp;
-                int i = 0, var_list_size = strlen($1.result_id);
+                string saved_result_id;
+		saved_result_id = $1.result_id;
+                int i = 0, var_list_size = saved_result_id.size();
                 for (; i <= var_list_size; i++) {
-                    //cout << "var_list_size = " << var_list_size << "; i = " << i << endl;
-                    //cout << "result_id[i] = " << $1.result_id[i] << endl;
-                    if (!isalnum($1.result_id[i]) || i == var_list_size) {
-                        //cout << "IFFFFFF?????????" << endl;
+                    if (!isalnum(saved_result_id[i]) || i == var_list_size) {
                         temp = "\t. _" + temp_ident + "\n";
                         temp_final_ident.append(temp);
-                        //cout << "temp = " << temp << endl;
-                        //cout << "temp_final = " << temp_final_ident << endl;
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($1.result_id[i]);
-                        //cout << "\nELELLSLELLELSLEEEEE???????" << endl;
-                        //cout << "$1.result_id[i] = " << $1.result_id[i] << endl;
+                        temp_ident.push_back(saved_result_id[i]);
                     }
                 }
-                $$.code = temp_final_ident.c_str();
+                $$.code = strdup(temp_final_ident.c_str());
                 cout << "\n$$.code = " << $$.code << endl;
                 cout << "\n AFTER CHANGES:\t$1.code = " << $1.code << endl;
                 cout << "\t$1.result_id = " << $1.result_id << endl;
+                cout << "$$.result_id = " << $$.result_id << endl;
             }
             | identifiers error INTEGER
             {}
@@ -194,7 +188,7 @@ identifiers: identifiers COMMA IDENT
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "identifiers: IDENT" << endl;
-                $$.result_id = $1;
+                $$.result_id = strdup($1);
             }
             ;
 
@@ -211,26 +205,28 @@ statement: var ASSIGN expression
                 string temp;
                 string temp_code;
                 string reversed_temp;
+                string saved_code;
+		saved_code = $3.code;
                 // $1.result_id = $3.result_id; //x := 3 + 2;
                 int commas = 2;
-                for(int i = strlen($3.code) - 1; i > 0; i--){
-                    if($3.code[i] == ','){
+                for(int i = saved_code.size() - 1; i > 0; i--){
+                    if(saved_code[i] == ','){
                       commas--;
                     }
                     if(commas == 0){
-                      if($3.code[i] == ' '){
+                      if(saved_code[i] == ' '){
                         break;
                       }else{
-                        reversed_temp.push_back($3.code[i]);
+                        reversed_temp.push_back(saved_code[i]);
                       }
                     }
                 }
                 for(int i = 0; i < reversed_temp.size(); i++){
                   temp.push_back(reversed_temp[i]);
                 }
-                temp_code = string("\t=") + $1.code + ", " + temp + "\n";
-                $$.code = temp_code.c_str();
-                cout << $$.code << endl;
+                temp_code = string("\t:= ") + saved_code + "\n";
+                $$.code = strdup(temp_code.c_str());
+                cout << "$$.code = " << $$.code << endl;
             }
             | IF bool_exp THEN stmnt stmnt2 ENDIF
             {}
@@ -276,8 +272,8 @@ statement: var ASSIGN expression
                 temp_code.append(temp.c_str());
             // this bitch is done !!!
             // ok ;-;
-		$$.code = temp_code.c_str();
-		cout << $$.code << endl;
+		$$.code = strdup(temp_code.c_str());
+		cout << "$$.code = " << $$.code << endl;
             }
             | DO BEGINLOOP stmnt ENDLOOP WHILE bool_exp
             {}
@@ -293,16 +289,18 @@ statement: var ASSIGN expression
                 // Separate each identifier
                 string temp_ident;
                 string temp;
-                int i = 0, var_list_size = strlen($2.result_id);
+                string saved_result_id;
+		saved_result_id = $2.result_id;
+                int i = 0, var_list_size = saved_result_id.size();
                 for (; i <= var_list_size; i++) {
-                    if ($2.result_id[i] == ' ' || i == var_list_size) {
+                    if (saved_result_id[i] == ' ' || i == var_list_size) {
                         temp = "\t.< _" + temp_ident + "\n";
-                        $$.code = temp.c_str();
-                        cout << $$.code << endl;
+                        $$.code = strdup(temp.c_str());
+                        cout << "$$.code = " << $$.code << endl;
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($2.result_id[i]);
+                        temp_ident.push_back(saved_result_id[i]);
                     }
                 }
             }
@@ -312,16 +310,18 @@ statement: var ASSIGN expression
                 cout << "statement: WRITE identifiers" << endl;
                 string temp_ident;
                 string temp;
-                int i = 0, var_list_size = strlen($2.result_id);
+                string saved_result_id;
+		saved_result_id = $2.result_id;
+                int i = 0, var_list_size = saved_result_id.size();
                 for (; i <= var_list_size; i++) {
-                    if ($2.result_id[i] == ' ' || i == var_list_size) {
+                    if (saved_result_id[i] == ' ' || i == var_list_size) {
                         temp = "\t.> _" + temp_ident + "\n";
-                        $$.code = temp.c_str();
-                        cout << $$.code << endl;
+                        $$.code = strdup(temp.c_str());
+                        cout << "$$.code = " << $$.code << endl;
                         temp_ident.clear();
                     }
                     else {
-                        temp_ident.push_back($2.result_id[i]);
+                        temp_ident.push_back(saved_result_id[i]);
                     }
                 }
             }
@@ -342,9 +342,9 @@ bool_exp: relation_and_exp rel_loop
                 cout << "\n\n**************************************" << endl;
                 cout << "bool_exp: relation_and_exp rel_loop" << endl;
                 // Or should this be something else?
-                $$.result_id = $1.result_id;
-                $$.code = $1.code;
-                cout << $$.code << endl;
+                $$.result_id = strdup($1.result_id);
+                $$.code = strdup($1.code);
+                cout << "$$.code = " << $$.code << endl;
             }
             ;
 
@@ -358,9 +358,9 @@ relation_and_exp: relation_exp rel_loop2
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "relation_and_exp: relation_exp rel_loop2" << endl;
-                $$.result_id = $1.result_id;
-                $$.code = $1.code;
-                cout << $$.code << endl;
+                $$.result_id = strdup($1.result_id);
+                $$.code = strdup($1.code);
+                cout << "$$.code = " << $$.code << endl;
             }
             ;
 
@@ -374,9 +374,9 @@ relation_exp: fork
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "relation_exp: fork" << endl;
-                $$.result_id = $1.result_id;
-                $$.code = $1.code;
-                cout << $$.code << endl;
+                $$.result_id = strdup($1.result_id);
+                $$.code = strdup($1.code);
+                cout << "$$.code = " << $$.code << endl;
             }
             | NOT fork
             {}
@@ -388,17 +388,22 @@ fork: expression comp expression
                 cout << "fork: expression comp expression" << endl;
                 string compare; 
                 string temp;
-
-                if ($2.result_id == "<=") {
-                    if (atoi($1.result_id) <= atoi($3.result_id)) {
+		string saved_result_id_1 = $1.result_id;
+		string saved_result_id_2 = $2.result_id;
+		string saved_result_id_3 = $3.result_id;
+		cout << "saved_result_id_1: " << saved_result_id_1 << endl;
+		cout << "saved_result_id_2: " << saved_result_id_2 << endl;
+		cout << "saved_result_id_3: " << saved_result_id_3 << endl;
+                if (saved_result_id_2 == "<=") {
+                    if (saved_result_id_1 <= saved_result_id_3) {
                         compare = "true";
                     }
                     else {
                         compare = "false";
                     }
                 }
-                else if ($2.result_id == "==") {
-                    if (atoi($1.result_id) == atoi($3.result_id)) {
+                else if (saved_result_id_2 == "==") {
+                    if (saved_result_id_1 == saved_result_id_3) {
                         compare = "true";
                     }
                     else {
@@ -414,7 +419,7 @@ fork: expression comp expression
 
                 temp = $2.result_id + make_comp_var() + ", " + $1.code + ", " + $3.code + "\n";
                 $$.code = temp.c_str();
-                cout << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
             }
             | TRUE
             {}
@@ -453,17 +458,30 @@ expression: multiplicative_exp mult_loop
                 cout << "\n\n**************************************" << endl;
                 cout << "expression: multiplicative_exp mult_loop" << endl;
                 string temp;
+                string saved_code;
+                string saved_result_id_1;
+                string saved_result_id_2;
+		saved_code = $2.code;
+		saved_result_id_1 = $1.result_id;
+		saved_result_id_2 = $2.result_id;
                 string temp_var = make_temp_var();
-                temp = "\t+ ";
-                if ($2.code == temp.c_str()) {
-                    temp = to_string(atoi($2.result_id) + atoi($1.result_id)); // temp = operand + operand
-                }
-                $$.result_id = temp.c_str(); // result_id = operand + operand numerical value
-		cout << "result_id: " << $$.result_id << endl;
+		//cout << "$1.result_id: " << $1.result_id << endl;
+		//cout << "$1.code: " << $1.code << endl;
+		//cout << "$2.result_id: " << $2.result_id << endl;
+		//cout << "$2.code: " << $2.code << endl;
+                //cout << "saved_result_id_1: " << saved_result_id_1 << endl;
+                //cout << "saved_result_id_2: " << saved_result_id_2 << endl;
+		//temp = "\t+ ";
+                //if (saved_code == temp) {
+                	//temp.append(to_string(saved_result_id_2 + saved_result_id_1)); // temp = operand + operand
+                //}
+		// ------------ im going to ignore result_id and not care here :D
+                //$$.result_id = strdup(temp.c_str()); // result_id = operand + operand numerical value
+		// cout << "$$.result_id: " << $$.result_id << endl;
             
-                temp = $2.code + temp_var + "," + $1.result_id + ", " + $2.result_id + "\n";
-                $$.code = temp.c_str();
-                cout << "code: " << $$.code << endl;
+                temp = saved_code + temp_var + ", " + saved_result_id_1 + ", " + saved_result_id_2 + "\n";
+                $$.code = strdup(temp.c_str());
+                cout << "$$.code: " << $$.code << endl;
             }
             ;
 
@@ -475,7 +493,7 @@ mult_loop: /* EMPTY */
 		temp.clear();
                 $$.result_id = "0";
                 $$.code = temp.c_str();
-                cout << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
 		
             }
             | ADD multiplicative_exp mult_loop
@@ -491,7 +509,7 @@ mult_loop: /* EMPTY */
                 $$.result_id = to_string(temp).c_str(); // result_id = operand (NUMBER or IDENT)
                 temp_str = "\t+ ";
                 $$.code = temp_str.c_str();
-                cout << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
             }
             | SUB multiplicative_exp mult_loop
             {}
@@ -501,8 +519,8 @@ multiplicative_exp: term term_loop
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "multiplicative_exp: term term_loop" << endl;
-                $$.result_id = $1.result_id;
-                $$.code = $1.code;
+                $$.result_id = strdup($1.result_id);
+                $$.code = strdup($1.code);
                 cout << "result_id: " << $$.result_id << endl;
                 cout << "code: " << $$.code << endl;
             }
@@ -528,9 +546,9 @@ term: SUB var %prec UMINUS
             {
                 cout << "\n\n**************************************" << endl;
                 cout << "term: var" << endl;
-                $$.result_id = $1.result_id;
+                $$.result_id = strdup($1.result_id);
                 cout << "term.result_id = " << $$.result_id << endl;
-                $$.code = $1.code;
+                $$.code = strdup($1.code);
                 cout << "term.code = " << $$.code << endl;
             }
             | NUMBER
@@ -539,7 +557,7 @@ term: SUB var %prec UMINUS
                 cout << "term: NUMBER" << endl;
                 $$.result_id = to_string($1).c_str();
                 $$.code = $$.result_id;
-                cout << $$.code << endl;
+                cout << "$$.code = " << $$.code << endl;
             }
             | L_PAREN expression R_PAREN
             {}
@@ -550,17 +568,12 @@ var: IDENT var_exp
                 cout << "\n\n**************************************" << endl;
                 cout << "var: IDENT var_exp" << endl;
                 string temp_id, temp_code;
-                temp_id = $1;
-                $$.result_id = temp_id.c_str();
-                temp_code = "_" + temp_id;
-                
-                // a, b, i, and result are all properly being saved down here
-                // So where is the problem stemming from? not here
-                cout << "1) var -> IDENT temp_code = " << temp_code << endl;
-                cout << "2) var -> IDENT temp_id = " << temp_id << endl;
-
-                $$.code = temp_code.c_str(); 
-                cout << $$.code << endl;
+                temp_code = $1;
+		temp_id = "_" + temp_code;
+                $$.result_id = strdup(temp_id.c_str());
+                $$.code = strdup(temp_id.c_str());
+                cout << "1) var -> IDENT $$.result_id = " << $$.result_id << endl;
+                cout << "2) var -> IDENT $$.code = " << $$.code << endl;
             }
             ;
 
@@ -607,3 +620,4 @@ int main(int argc, char **argv) {
 void yyerror(const char *msg) {
    printf("** Line %d, position %d: %s\n", currLine, currPos, msg);
 }
+
