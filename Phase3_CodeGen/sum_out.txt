@@ -1,0 +1,24 @@
+   . _a
+   . _b
+   . _i
+   . _result
+   . p0
+   . p1
+   . t0
+   . t1
+: START
+   .< _a
+   .< _b
+   = _result, 0
+   = _i, _a
+: L0
+   <= p0, _i, _b
+   == p1, p0, 0
+   ?:= L1, p1
+   + t0, _result, _i
+   = _result, t0
+   + t1, _i, 1
+   = _i, t1
+   := L0
+: L1
+   .> _result
