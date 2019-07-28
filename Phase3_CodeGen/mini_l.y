@@ -66,7 +66,8 @@ program: PROGRAM IDENT SEMICOLON block END_PROGRAM
             {
                 //cout << "\n\n**************************************" << endl;
                 //cout << "program" << endl;
-                string output = $4.code;
+                string message = "\n\n4/5 complete:\n1) Integer scalar variables\n2) Assignment statements\n3) While loops\n5) Read and write statements\n\n";
+                string output = message + $4.code;
                 cout << output << endl;
 
                 ofstream os;
